@@ -3,104 +3,146 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>看我</title>
+<meta name="theme-color" content="#0B1B33">
+<title>天气 · 苍梧 · 广西梧州</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   :root{
-    --blue:#007AFF; --ink:#1C1C1E; --ink2:#6E6E73; --line:#E5E5EA;
-    --card:#FFFFFF; --bg:#F2F2F7;
+    --ink:#F4F7FC; --dim:rgba(244,247,252,.62); --dim2:rgba(244,247,252,.4);
+    --card:rgba(255,255,255,.08); --line:rgba(255,255,255,.14);
     --font:-apple-system,"SF Pro Text","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
   }
-  html,body{background:var(--bg);}
+  html,body{background:#0B1B33}
   body{
-    font-family:var(--font); color:var(--ink);
-    min-height:100vh; -webkit-font-smoothing:antialiased;
-    /* 顶部留白交给原生导航栏，网页这侧不再加，否则会空两倍 */
-    padding:24px 20px 40px;
+    font-family:var(--font);color:var(--ink);min-height:100vh;
+    background:
+      radial-gradient(115% 62% at 78% 4%, #2E5C8A 0%, rgba(46,92,138,0) 58%),
+      radial-gradient(95% 52% at 12% 96%, #1B3A5C 0%, rgba(27,58,92,0) 62%),
+      linear-gradient(178deg,#0B1B33 0%,#102846 52%,#0C1F38 100%);
+    -webkit-font-smoothing:antialiased;
+    /* 全屏沉浸：状态栏/导航栏都是透明的，页面自己按安全区留白。
+       env() 在不支持的机器上取不到值，所以给 44px/28px 兜底。 */
+    padding:calc(44px + env(safe-area-inset-top)) 18px calc(52px + env(safe-area-inset-bottom));
   }
-  .hero{text-align:center;padding:16px 0 28px}
-  .mark{
-    width:88px;height:88px;margin:0 auto 18px;
-    border-radius:22.37%;position:relative;overflow:hidden;
-    background:linear-gradient(140deg,#5AC8FA 0%,#0A84FF 100%);
-    box-shadow:0 10px 26px rgba(0,122,255,.28);
-  }
-  .mark svg{position:absolute;inset:0;width:100%;height:100%}
-  h1{font-size:28px;font-weight:700;letter-spacing:-.4px}
-  .sub{margin-top:8px;font-size:15px;color:var(--ink2);line-height:1.5}
-  .card{
-    background:var(--card);border-radius:14px;padding:18px 18px;
-    margin:0 0 14px;box-shadow:0 1px 2px rgba(0,0,0,.04);
-  }
-  .card h2{font-size:16px;font-weight:600;margin-bottom:10px}
-  .card p{font-size:14.5px;line-height:1.72;color:var(--ink2)}
-  code{
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:12.5px;background:#F2F2F7;border-radius:5px;padding:2px 6px;color:var(--ink);
-  }
-  .steps{list-style:none;counter-reset:s}
-  .steps li{
-    counter-increment:s;position:relative;padding:9px 0 9px 32px;
-    font-size:14.5px;line-height:1.6;color:var(--ink);
-    border-bottom:1px solid var(--line);
-  }
-  .steps li:last-child{border-bottom:0}
-  .steps li::before{
-    content:counter(s);position:absolute;left:0;top:9px;
-    width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;
-    font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;
-  }
-  .foot{text-align:center;font-size:12.5px;color:#A1A1A6;padding:18px 0 4px;line-height:1.7}
-  .ok{display:inline-flex;align-items:center;gap:6px;color:#34C759;font-weight:600;font-size:13px}
-  .dot{width:7px;height:7px;border-radius:50%;background:#34C759;display:inline-block}
+  .wrap{max-width:520px;margin:0 auto}
+
+  .place{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+  .place h1{font-size:19px;font-weight:600;letter-spacing:.2px}
+  .place span{font-size:12.5px;color:var(--dim2)}
+  .stamp{font-size:12px;color:var(--dim2);margin-bottom:22px}
+
+  .now{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .now .big{font-size:74px;font-weight:250;letter-spacing:-3px;line-height:1}
+  .now .big i{font-style:normal;font-size:34px;font-weight:300;vertical-align:super;letter-spacing:0}
+  .now .meta{text-align:right;padding-top:6px}
+  .now .meta .cond{display:flex;align-items:center;justify-content:flex-end;gap:6px;
+    font-size:15.5px;font-weight:500}
+  .now .meta .feels{font-size:13px;color:var(--dim);margin-top:6px}
+  .now .meta .rn{font-size:13px;color:var(--dim2);margin-top:3px}
+
+  .scale{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);
+    margin:8px 0 20px}
+  .scale b{confident:1;font-weight:500;color:var(--ink)}
+
+  .curve{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:14px 10px 6px;margin-bottom:16px;backdrop-filter:blur(8px)}
+  .curve svg{display:block;width:100%;height:auto}
+  .curve text{font-size:9.5px;fill:rgba(244,247,252,.55);font-family:var(--font)}
+  .curve .ttl{font-size:12.5px;color:var(--dim);padding:0 8px 8px;letter-spacing:.3px}
+
+  .hours{display:flex;gap:4px;overflow-x:auto;padding:14px 12px;margin-bottom:16px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .hours::-webkit-scrollbar{display:none}
+  .hr{flex:0 0 auto;width:52px;display:flex;flex-direction:column;align-items:center;gap:7px;
+    padding:4px 0;border-radius:11px}
+  .hr.now{background:rgba(255,255,255,.1)}
+  .hr .ht{font-size:11.5px;color:var(--dim2)}
+  .hr.now .ht{color:var(--ink);font-weight:500}
+  .hr .hv{font-size:14px;font-weight:500}
+  .hr .hp{font-size:10.5px;color:#7FC4F5;min-height:13px}
+
+  .days{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .d{background:var(--card);border:1px solid var(--line);border-radius:15px;
+    padding:13px 6px 11px;text-align:center}
+  .d .dn{font-size:12.5px;font-weight:500}
+  .d .dn i{display:block;font-style:normal;font-size:10px;color:var(--dim2);margin-top:2px;
+    font-weight:400}
+  .d .di{margin:9px 0 7px;height:30px;display:flex;align-items:center;justify-content:center;
+    color:rgba(255,255,255,.9)}
+  .d .dt{font-size:15px;display:flex;justify-content:center;gap:5px;align-items:baseline}
+  .d .dt b{font-weight:600}
+  .d .dt span{font-size:12.5px;color:var(--dim2)}
+  .d .dd{font-size:10px;color:var(--dim2);margin-top:5px;line-height:1.35}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+  .k{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 15px;
+    display:flex;align-items:center;justify-content:space-between}
+  .k .kl{font-size:12px;color:var(--dim);letter-spacing:.3px}
+  .k .kv{font-size:19px;font-weight:400}
+  .k .kv i{font-style:normal;font-size:11.5px;color:var(--dim2);margin-left:2px}
+
+  .note{background:rgba(127,196,245,.1);border:1px solid rgba(127,196,245,.22);
+    border-radius:15px;padding:13px 16px;font-size:13.5px;line-height:1.65;
+    color:#DCEBF9;margin-bottom:22px}
+  .foot{text-align:center;font-size:11px;color:var(--dim2);line-height:1.8;padding-bottom:6px}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-  <div class="hero">
-    <div class="mark">
-      <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
-        <path d="M12 50 C12 50 30 24 50 24 C70 24 88 50 88 50 C88 50 70 76 50 76 C30 76 12 50 12 50 Z"
-              fill="#fff"/>
-        <circle cx="50" cy="50" r="17" fill="#0A84FF"/>
-        <circle cx="50" cy="50" r="7.5" fill="#fff"/>
-      </svg>
+  <div class="place"><h1>苍梧 · 广西梧州</h1><span>23.48N 111.28E</span></div>
+  <div class="stamp">更新 2026/09/26 22:30 · 实时观测</div>
+
+  <div class="now">
+    <div class="big">27<i>°</i></div>
+    <div class="meta">
+      <div class="cond"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>晴</span></div>
+      <div class="feels">体感 33°</div>
+      <div class="rn">湿度 89% · 风 2 km/h</div>
     </div>
-    <h1>看我</h1>
-    <div class="sub">一个壳，里面装你的网页<br>换页不用重新装 App</div>
+  </div>
+  <div class="scale">
+    <span>今日 <b>25° ~ 32°</b></span>
+    <span>体感最高 <b>38°</b></span>
+    <span>UV <b>8</b></span>
   </div>
 
-  <div class="card">
-    <h2>这一页是样例</h2>
-    <p>
-      你现在看到的这个页面放在 GitHub 仓库里。想要换成你自己的内容，
-      直接改仓库里那个 <code>index.html</code> 就行 ——
-      App 里点一下右上角的刷新，看到的就是新版。
-    </p>
+  <div class="curve">
+    <div class="ttl">未来 12 小时 · 气温</div>
+    <svg viewBox="0 0 320 92" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7FC4F5" stop-opacity=".42"/>
+          <stop offset="100%" stop-color="#7FC4F5" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <polygon points="16.0,76.0 16.0,36.0 42.2,39.6 68.4,50.5 94.5,57.8 120.7,61.5 146.9,61.5 173.1,65.1 199.3,70.5 225.5,76.0 251.6,74.2 277.8,45.1 304.0,16.0 304.0,76.0" fill="url(#g)"/>
+      <polyline points="16.0,36.0 42.2,39.6 68.4,50.5 94.5,57.8 120.7,61.5 146.9,61.5 173.1,65.1 199.3,70.5 225.5,76.0 251.6,74.2 277.8,45.1 304.0,16.0" fill="none" stroke="#BFE0FA" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="16.0" cy="36.0" r="3.4" fill="#fff"/><circle cx="42.2" cy="39.6" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="68.4" cy="50.5" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="94.5" cy="57.8" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="120.7" cy="61.5" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="146.9" cy="61.5" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="173.1" cy="65.1" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="199.3" cy="70.5" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="225.5" cy="76.0" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="251.6" cy="74.2" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="277.8" cy="45.1" r="2.4" fill="rgba(255,255,255,.72)"/><circle cx="304.0" cy="16.0" r="2.4" fill="rgba(255,255,255,.72)"/>
+      <text x="16.0" y="28.0" text-anchor="middle">27°</text><text x="94.5" y="49.8" text-anchor="middle">26°</text><text x="173.1" y="57.1" text-anchor="middle">25°</text><text x="251.6" y="66.2" text-anchor="middle">25°</text>
+      <text x="16.0" y="89.0" text-anchor="middle">22</text><text x="94.5" y="89.0" text-anchor="middle">01</text><text x="173.1" y="89.0" text-anchor="middle">04</text><text x="251.6" y="89.0" text-anchor="middle">07</text>
+    </svg>
   </div>
 
-  <div class="card">
-    <h2>怎么换内容</h2>
-    <ul class="steps">
-      <li>打开 GitHub，进这个仓库</li>
-      <li>编辑 <code>index.html</code>（也可以传一整个网页目录）</li>
-      <li>提交，等十几秒</li>
-      <li>App 右上角点刷新</li>
-    </ul>
+  <div class="hours"><div class="hr now"><span class="ht">现在</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">27°</span><span class="hp">—</span></div><div class="hr"><span class="ht">23:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">27°</span><span class="hp">—</span></div><div class="hr"><span class="ht">00:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">26°</span><span class="hp">—</span></div><div class="hr"><span class="ht">01:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">26°</span><span class="hp">—</span></div><div class="hr"><span class="ht">02:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">26°</span><span class="hp">—</span></div><div class="hr"><span class="ht">03:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">26°</span><span class="hp">—</span></div><div class="hr"><span class="ht">04:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">25°</span><span class="hp">—</span></div><div class="hr"><span class="ht">05:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">25°</span><span class="hp">—</span></div><div class="hr"><span class="ht">06:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="hv">25°</span><span class="hp">—</span></div><div class="hr"><span class="ht">07:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="none" stroke="currentColor" stroke-width="1.7"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/></g></svg><span class="hv">25°</span><span class="hp">—</span></div><div class="hr"><span class="ht">08:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="none" stroke="currentColor" stroke-width="1.7"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/></g></svg><span class="hv">26°</span><span class="hp">—</span></div><div class="hr"><span class="ht">09:00</span><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="none" stroke="currentColor" stroke-width="1.7"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/></g></svg><span class="hv">28°</span><span class="hp">—</span></div></div>
+
+  <div class="days"><div class="d"><div class="dn">今天<i>09/26</i></div><div class="di"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7.4 15.4h9a3.9 3.9 0 0 0 .2-7.8A5.4 5.4 0 0 0 6.4 8.8a3.4 3.4 0 0 0 1 6.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9.6 18v1.4M13 18v1.4M16.4 18v1.4"/></g></svg></div><div class="dt"><b>32°</b><span>25°</span></div><div class="dd">毛毛雨 · 雨 8%</div></div><div class="d"><div class="dn">明天<i>09/27</i></div><div class="di"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="none" stroke="currentColor" stroke-width="1.7"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.6v2.4M12 19v2.4M2.6 12H5M19 12h2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/></g></svg></div><div class="dt"><b>33°</b><span>25°</span></div><div class="dd">晴间少云 · 雨 14%</div></div><div class="d"><div class="dn">后天<i>09/28</i></div><div class="di"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7.4 15.4h9a3.9 3.9 0 0 0 .2-7.8A5.4 5.4 0 0 0 6.4 8.8a3.4 3.4 0 0 0 1 6.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9.6 18v1.4M13 18v1.4M16.4 18v1.4"/></g></svg></div><div class="dt"><b>34°</b><span>25°</span></div><div class="dd">毛毛雨 · 雨 27%</div></div><div class="d"><div class="dn">大后天<i>09/29</i></div><div class="di"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7.4 15.4h9a3.9 3.9 0 0 0 .2-7.8A5.4 5.4 0 0 0 6.4 8.8a3.4 3.4 0 0 0 1 6.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9.6 18v1.4M13 18v1.4M16.4 18v1.4"/></g></svg></div><div class="dt"><b>34°</b><span>25°</span></div><div class="dd">毛毛雨 · 雨 18%</div></div></div>
+
+  <div class="grid">
+    <div class="k"><span class="kl">日出</span><span class="kv">06:24</span></div>
+    <div class="k"><span class="kl">日落</span><span class="kv">18:27</span></div>
+    <div class="k"><span class="kl">降雨概率</span><span class="kv">8<i>%</i></span></div>
+    <div class="k"><span class="kl">最大风速</span><span class="kv">7<i>km/h</i></span></div>
   </div>
 
-  <div class="card">
-    <h2>想换成别的网址也行</h2>
-    <p>
-      左上角进设置，把来源改成「网页地址」，填上任何网址就行。
-      两种来源随时能切换。
-    </p>
-  </div>
+  <div class="note">这会儿体感还在 33°C 上下，闷，注意补水。</div>
 
   <div class="foot">
-    <span class="ok"><span class="dot"></span>已连上</span><br>
-    内容托管在 GitHub · 由「看我」呈现
+    数据 Open-Meteo · 逐小时格点预报<br>
+    苍梧 · 广西梧州 · 由「看我」呈现
   </div>
-
+</div>
 </body>
 </html>
