@@ -1,7 +1,7 @@
 {
   "home": {
-    "name": "home",
-    "entry": "index.html"
+    "name": "weather",
+    "entry": "weather.html"
   },
   "pages": {
     "home": {
