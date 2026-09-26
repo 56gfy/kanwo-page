@@ -10,6 +10,11 @@
       "entry": "weather.html",
       "title": "天气·苍梧",
       "updated": "2026-09-26 23:55"
+    },
+    "__selftest": {
+      "entry": "__selftest.html",
+      "title": "部署链路自检页",
+      "updated": "2026-09-27 00:20"
     }
   }
 }
