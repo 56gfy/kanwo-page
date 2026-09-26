@@ -20,9 +20,8 @@
       radial-gradient(95% 52% at 12% 96%, #1B3A5C 0%, rgba(27,58,92,0) 62%),
       linear-gradient(178deg,#0B1B33 0%,#102846 52%,#0C1F38 100%);
     -webkit-font-smoothing:antialiased;
-    /* 全屏沉浸：状态栏/导航栏都是透明的，页面自己按安全区留白。
-       env() 在不支持的机器上取不到值，所以给 44px/28px 兜底。 */
-    padding:calc(44px + env(safe-area-inset-top)) 18px calc(52px + env(safe-area-inset-bottom));
+    /* 全屏沉浸：App 不再给状态栏留白，页面自己留一点顶部呼吸位 */
+    padding:44px 18px 40px;
   }
   .wrap{max-width:520px;margin:0 auto}
 
@@ -92,14 +91,14 @@
 <div class="wrap">
 
   <div class="place"><h1>苍梧 · 广西梧州</h1><span>23.48N 111.28E</span></div>
-  <div class="stamp">更新 2026/09/26 22:30 · 实时观测</div>
+  <div class="stamp">更新 2026/09/26 22:45 · 实时观测</div>
 
   <div class="now">
     <div class="big">27<i>°</i></div>
     <div class="meta">
       <div class="cond"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4.2a8.6 8.6 0 1 0 10.6 10.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>晴</span></div>
       <div class="feels">体感 33°</div>
-      <div class="rn">湿度 89% · 风 2 km/h</div>
+      <div class="rn">湿度 89% · 风 1 km/h</div>
     </div>
   </div>
   <div class="scale">
