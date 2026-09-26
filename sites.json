@@ -1,7 +1,7 @@
 {
   "home": {
-    "name": "home",
-    "entry": "index.html"
+    "name": "ai-news",
+    "entry": "ai-news.html"
   },
   "pages": {
     "home": {
@@ -24,6 +24,14 @@
       "sha256": "c77586cfa6e254a3d02005a2d2f50cd43e2f28fe05641dfd25306fbe33519f54",
       "bytes": 18426,
       "updated": "2026-09-27 00:29",
+      "prev_sha256": null
+    },
+    "ai-news": {
+      "entry": "ai-news.html",
+      "title": "AI 动态 · 九月",
+      "sha256": "bc94a24a4c53027f2399b54ad760965ceb5a8d9c22cdf486ccd30b880ca1b156",
+      "bytes": 16981,
+      "updated": "2026-09-27 00:32",
       "prev_sha256": null
     }
   }
