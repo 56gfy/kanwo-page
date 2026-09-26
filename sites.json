@@ -1,7 +1,7 @@
 {
   "home": {
-    "name": "__selftest",
-    "entry": "__selftest.html"
+    "name": "home",
+    "entry": "index.html"
   },
   "pages": {
     "home": {
