@@ -1,7 +1,7 @@
 {
   "home": {
     "name": "ourstory",
-    "entry": "ourstory/index.html"
+    "entry": "index.html"
   },
   "pages": {
     "home": {
@@ -43,12 +43,12 @@
       "prev_sha256": null
     },
     "ourstory": {
-      "entry": "ourstory/index.html",
+      "entry": "index.html",
       "title": "我们的故事",
       "sha256": "666d3372eda6bb91d5bd7aab4bacd10b997dbd2fe6a5c9f7143d16660c5af17c",
       "bytes": 6507,
-      "updated": "2026-09-27 01:06",
-      "prev_sha256": null
+      "updated": "2026-09-27 01:09",
+      "prev_sha256": "666d3372eda6bb91d5bd7aab4bacd10b997dbd2fe6a5c9f7143d16660c5af17c"
     }
   }
 }
