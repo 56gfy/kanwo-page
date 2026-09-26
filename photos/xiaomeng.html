@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<!--
+  小蒙 · 只给你一个人看
+  ─────────────────────────────────────────────
+  ★ 想加新的话：直接跑
+        python scripts/add_note.py "想说的话"
+        python scripts/add_note.py "想说的话" --photo 图片.jpg
+    脚本会自动插到正确位置、推上线，App 里刷新就能看到，不用重装。
+    也可以手动照着已有的 <li class="note"> 复制一条改。
+
+  ★ 本页全内联：没有外链字体、没有 emoji。这是刻意的 ——
+    断网、被墙、CDN 抽风都照样能看，不会白屏。
+    （只有你自己放上去的照片是外链，那个必须联网。）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F6">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>给小蒙</title>
+<style>
+  :root{
+    --paper:#FFFDFB;
+    --ink:#3B2A31;
+    --ink-soft:#8B6E78;
+    --rose:#B94A63;
+    --rose-deep:#A93A55;
+    --rose-lite:#F7C8D5;
+    --gold:#C6A15B;
+    --hair:rgba(59,42,49,.10);
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{background:#FFF9F6}
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--ink);
+    font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
+    background:
+      radial-gradient(115% 55% at 50% -6%,  #FFE7E1 0%, rgba(255,231,225,0) 62%),
+      radial-gradient(120% 55% at 50% 104%, #F3E1EC 0%, rgba(243,225,236,0) 58%),
+      linear-gradient(180deg,#FFF9F6 0%,#FDF2F0 46%,#F8ECF1 100%);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 飘落的花瓣（纯 CSS 形状，不用图片） ---------- */
+  .petals{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+  .petal{
+    position:absolute;top:-8vh;
+    width:var(--sz);height:var(--sz);
+    background:linear-gradient(135deg,#FFE3E9,#F2AEC1);
+    border-radius:100% 0 100% 0;
+    box-shadow:0 1px 3px rgba(180,110,135,.18);
+    opacity:0;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    0%  {transform:translate3d(0,-12vh,0) rotate(0deg);opacity:0}
+    12% {opacity:.85}
+    86% {opacity:.85}
+    100%{transform:translate3d(var(--sway),116vh,0) rotate(var(--spin));opacity:0}
+  }
+
+  /* ---------- 版心 ---------- */
+  .wrap{
+    position:relative;z-index:2;
+    width:100%;max-width:560px;margin:0 auto;
+    padding:
+      calc(58px + env(safe-area-inset-top))
+      22px
+      calc(56px + env(safe-area-inset-bottom));
+  }
+
+  .reveal{animation:rise .95s var(--ease) both}
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+  /* ---------- 开场 ---------- */
+  .opening{text-align:center;margin-bottom:44px}
+  .opening .to{
+    margin:0 0 18px;font-size:13px;letter-spacing:.42em;
+    color:var(--ink-soft);text-indent:.42em;
+  }
+  .opening h1{
+    margin:0;font-size:clamp(30px,9.2vw,42px);font-weight:600;
+    line-height:1.42;letter-spacing:.06em;
+  }
+  .opening h1 em{
+    font-style:normal;color:var(--rose);
+  }
+  .rule{
+    width:46px;height:1px;margin:26px auto 0;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+
+  /* ---------- 信 ---------- */
+  .letter{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--hair);
+    border-radius:20px;
+    padding:44px 26px 34px;
+    box-shadow:
+      0 26px 60px -30px rgba(96,44,66,.42),
+      0 1px 0 rgba(255,255,255,.9) inset;
+  }
+  /* 信封折线：两道上缘的斜线，暗示这是一封信 */
+  .letter::before,.letter::after{
+    content:"";position:absolute;top:0;width:31%;height:52px;
+    border-top:1px solid rgba(185,74,99,.14);
+    pointer-events:none;
+  }
+  .letter::before{left:0;border-right:1px solid rgba(185,74,99,.14);
+    border-radius:20px 0 0 0;
+    background:linear-gradient(215deg,rgba(247,200,213,.22),rgba(247,200,213,0) 62%);}
+  .letter::after{right:0;border-left:1px solid rgba(185,74,99,.14);
+    border-radius:0 20px 0 0;
+    background:linear-gradient(145deg,rgba(247,200,213,.22),rgba(247,200,213,0) 62%);}
+
+  /* 火漆印 */
+  .seal{
+    position:absolute;top:-27px;left:50%;transform:translateX(-50%);
+    width:58px;height:58px;border-radius:50%;
+    background:radial-gradient(circle at 34% 28%,#DC8195,#A93A55 68%);
+    box-shadow:
+      0 8px 18px -8px rgba(140,40,60,.75),
+      0 2px 6px rgba(255,255,255,.4) inset,
+      0 -3px 7px rgba(90,20,35,.28) inset;
+    display:grid;place-items:center;
+  }
+  .seal svg{width:24px;height:24px;display:block}
+
+  .salute{
+    margin:0 0 22px;font-size:17px;font-weight:600;
+    letter-spacing:.03em;color:var(--rose-deep);
+  }
+  .body-text p{
+    margin:0 0 17px;font-size:16px;line-height:2.0;
+    letter-spacing:.02em;color:var(--ink);
+  }
+  .body-text p:last-child{margin-bottom:0}
+  .lead{
+    font-size:clamp(24px,7.6vw,30px);line-height:1.7;font-weight:600;
+    letter-spacing:.12em;color:var(--ink);margin:0 0 26px;
+  }
+  .lead i{font-style:normal;color:var(--rose)}
+  .sign{
+    margin:30px 0 0;text-align:right;
+    font-size:14px;letter-spacing:.1em;color:var(--ink-soft);
+  }
+  .sign b{display:block;font-weight:400;margin-top:5px;font-size:12.5px;
+    letter-spacing:.2em;color:rgba(139,110,120,.75)}
+
+  /* ---------- 花枝 ---------- */
+  .bloom{margin:52px auto 8px;width:100%;max-width:340px;display:block}
+  .bloom path,.bloom line{vector-effect:non-scaling-stroke}
+  .sway{animation:sway 7.5s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes sway{0%,100%{transform:rotate(-1.1deg)}50%{transform:rotate(1.1deg)}}
+
+  /* ---------- 往后想对你说的话（会一直往下长） ---------- */
+  .keeps{position:relative;margin-top:56px}
+
+  .keeps-head{text-align:center;margin-bottom:34px}
+  .keeps-head h2{
+    margin:0;font-size:clamp(20px,6.2vw,26px);font-weight:600;
+    letter-spacing:.14em;line-height:1.6;color:var(--ink);
+  }
+  .keeps-head h2 em{font-style:normal;color:var(--rose)}
+  .lockline{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin:14px 0 0;
+  }
+  .lockline svg{width:13px;height:13px;flex:none;opacity:.72}
+  .lockline span{
+    font-size:12.5px;letter-spacing:.2em;color:var(--ink-soft);
+    text-indent:.2em;
+  }
+  .keeps-head .rule{margin-top:20px}
+
+  /* 时间线：一条极淡的竖线串起每一封 */
+  .notes{list-style:none;margin:0;padding:0;position:relative}
+  .notes::before{
+    content:"";position:absolute;left:5px;top:10px;bottom:14px;width:1px;
+    background:linear-gradient(180deg,
+      rgba(198,161,91,0) 0%, rgba(198,161,91,.42) 8%,
+      rgba(185,74,99,.16) 60%, rgba(185,74,99,0) 100%);
+  }
+  .note{position:relative;padding:0 0 0 34px;margin-bottom:30px}
+  .note:last-child{margin-bottom:0}
+  /* 节点 = 一片小花瓣，和飘落的那些同一种形状 */
+  .note::before{
+    content:"";position:absolute;left:-3px;top:5px;
+    width:13px;height:13px;
+    background:linear-gradient(135deg,#FFE3E9,#F2AEC1);
+    border-radius:100% 0 100% 0;
+    box-shadow:0 0 0 4px #FFF9F6, 0 1px 3px rgba(180,110,135,.22);
+  }
+  .note time{
+    display:block;font-size:12px;letter-spacing:.2em;
+    color:rgba(139,110,120,.85);margin-bottom:7px;
+  }
+  .note p{
+    margin:0;font-size:16px;line-height:2.0;letter-spacing:.02em;
+    color:var(--ink);
+  }
+  .note p em{font-style:normal;color:var(--rose-deep)}
+  /* 想分享的照片 */
+  .note img{
+    display:block;width:100%;height:auto;margin:14px 0 0;
+    border-radius:14px;
+    border:1px solid rgba(59,42,49,.08);
+    box-shadow:0 14px 30px -18px rgba(96,44,66,.5);
+    background:#F3E9EC;
+  }
+
+  /* ---------- 信箱 ---------- */
+  .post{text-align:center;margin-top:56px;position:relative}
+  .post .hint{
+    margin:0 0 10px;font-size:13.5px;letter-spacing:.22em;
+    color:var(--ink-soft);text-indent:.22em;
+    transition:opacity .4s var(--ease);
+  }
+  .mailbox{
+    display:block;width:150px;margin:0 auto;cursor:pointer;
+    background:none;border:0;padding:0;
+    animation:bob 4.6s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .mailbox svg{display:block;width:100%;height:auto;overflow:visible}
+  .mb-door{transform-origin:62px 140px;transition:transform .62s var(--ease),opacity .5s var(--ease)}
+  .mb-note{opacity:0;transform:translateY(9px);transition:opacity .55s var(--ease) .24s,transform .55s var(--ease) .24s}
+  .mb-flag{transform-origin:103px 92px;transition:transform .5s var(--ease)}
+  .is-open .mb-door{transform:translateY(16px) rotate(8deg);opacity:.9}
+  .is-open .mb-note{opacity:1;transform:translateY(0)}
+  .is-open .mb-flag{transform:rotate(34deg)}
+
+  /* 开盖时飞出的花瓣 */
+  .burst i{
+    position:absolute;left:62px;top:60px;width:11px;height:11px;
+    background:linear-gradient(135deg,#FFE3E9,#F2AEC1);
+    border-radius:100% 0 100% 0;
+    opacity:0;
+  }
+  .is-open .burst i{animation:pop .95s var(--ease) forwards}
+  @keyframes pop{
+    0%  {opacity:0;transform:translate(0,0) rotate(0) scale(.5)}
+    18% {opacity:1}
+    100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(1)}
+  }
+
+  .after{
+    margin:26px auto 0;max-width:330px;
+    font-size:15px;line-height:2.0;letter-spacing:.04em;
+    color:var(--rose-deep);
+    opacity:0;max-height:0;overflow:hidden;
+    transition:opacity .7s var(--ease),max-height .7s var(--ease);
+  }
+  .is-open + .after{opacity:1;max-height:240px}
+
+  /* ---------- 收尾 ---------- */
+  .tail{
+    margin-top:54px;text-align:center;
+    font-size:12px;letter-spacing:.34em;color:rgba(139,110,120,.62);
+    text-indent:.34em;
+  }
+  .tail span{display:inline-block;margin:0 12px;color:var(--gold)}
+
+  /* ---------- 无障碍 / 省电 ---------- */
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  @media (prefers-reduced-motion:reduce){
+    .petal,.sway,.mailbox{animation:none !important}
+    .reveal{animation:none !important;opacity:1 !important;transform:none !important}
+    .petal{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="petals" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <!-- 开场 -->
+  <header class="opening reveal" style="animation-delay:.05s">
+    <p class="to">致 小蒙</p>
+    <h1>有句话<br>在心里放了很久<br><em>今天想说给你听</em></h1>
+    <div class="rule"></div>
+  </header>
+
+  <!-- 第一封 -->
+  <section class="letter reveal" style="animation-delay:.28s">
+    <div class="seal" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#FFE6EC" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20.4s-7.4-4.6-7.4-9.8a4.3 4.3 0 0 1 7.4-3.1 4.3 4.3 0 0 1 7.4 3.1c0 5.2-7.4 9.8-7.4 9.8z"/>
+      </svg>
+    </div>
+
+    <p class="salute">小蒙：</p>
+
+    <p class="lead">我<i>喜欢</i>你。</p>
+
+    <div class="body-text">
+      <p>不是今天才开始的，是攒了很久，攒到再不说就要藏不住了。</p>
+      <p>认识你之后，普通的傍晚会想拍给你看，好笑的事第一个想讲给你听，连天气变好都觉得该有你一份。</p>
+      <p>我没有多华丽的词，只有一句很笨、但很认真的话&nbsp;—— 想在你身边，把往后每一年的春天都过一遍。</p>
+      <p>你不用急着回答我。<br>愿意的话，就把这封信留在你那里。</p>
+    </div>
+
+    <p class="sign">一个很喜欢你的人<b>写于 此刻</b></p>
+  </section>
+
+  <!-- 花枝 -->
+  <svg class="bloom sway reveal" style="animation-delay:.5s" viewBox="0 0 340 150"
+       role="img" aria-label="一束花">
+    <g fill="none" stroke="#B79A7C" stroke-width="1.5" stroke-linecap="round">
+      <path d="M170 148C170 118 158 96 138 78"/>
+      <path d="M170 148C170 120 182 100 202 82"/>
+      <path d="M170 148C170 126 170 108 170 88"/>
+    </g>
+    <g fill="#CFD9BE" opacity=".95">
+      <path d="M160 118c-13-3-22-11-24-22 12-1 22 6 24 22z"/>
+      <path d="M181 122c12-4 20-13 21-24-12 0-21 8-21 24z"/>
+    </g>
+    <g>
+      <g transform="translate(138,74)">
+        <g fill="#F7C8D5">
+          <g><ellipse cy="-9.4" rx="5.6" ry="8.4"/></g>
+          <g transform="rotate(72)"><ellipse cy="-9.4" rx="5.6" ry="8.4"/></g>
+          <g transform="rotate(144)"><ellipse cy="-9.4" rx="5.6" ry="8.4"/></g>
+          <g transform="rotate(216)"><ellipse cy="-9.4" rx="5.6" ry="8.4"/></g>
+          <g transform="rotate(288)"><ellipse cy="-9.4" rx="5.6" ry="8.4"/></g>
+        </g>
+        <circle r="3.5" fill="#E9A0B4"/>
+      </g>
+      <g transform="translate(202,78)">
+        <g fill="#FBD6E0">
+          <g><ellipse cy="-8" rx="4.8" ry="7.2"/></g>
+          <g transform="rotate(72)"><ellipse cy="-8" rx="4.8" ry="7.2"/></g>
+          <g transform="rotate(144)"><ellipse cy="-8" rx="4.8" ry="7.2"/></g>
+          <g transform="rotate(216)"><ellipse cy="-8" rx="4.8" ry="7.2"/></g>
+          <g transform="rotate(288)"><ellipse cy="-8" rx="4.8" ry="7.2"/></g>
+        </g>
+        <circle r="3" fill="#E9A0B4"/>
+      </g>
+      <g transform="translate(170,82)">
+        <g fill="#B94A63">
+          <g><ellipse cy="-10.6" rx="6.4" ry="9.6"/></g>
+          <g transform="rotate(72)"><ellipse cy="-10.6" rx="6.4" ry="9.6"/></g>
+          <g transform="rotate(144)"><ellipse cy="-10.6" rx="6.4" ry="9.6"/></g>
+          <g transform="rotate(216)"><ellipse cy="-10.6" rx="6.4" ry="9.6"/></g>
+          <g transform="rotate(288)"><ellipse cy="-10.6" rx="6.4" ry="9.6"/></g>
+        </g>
+        <circle r="4" fill="#F2C2CE"/>
+      </g>
+      <g fill="#F7C8D5">
+        <circle cx="118" cy="92" r="4.4"/>
+        <circle cx="222" cy="96" r="3.8"/>
+        <circle cx="152" cy="60" r="3.4"/>
+      </g>
+    </g>
+  </svg>
+
+  <!-- 往后想对你说的话（会一直往下长） -->
+  <section class="keeps reveal" style="animation-delay:.62s">
+    <div class="keeps-head">
+      <h2>往后想对你说的<br><em>都放在这里</em></h2>
+      <p class="lockline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#B94A63" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="10.5" width="16" height="10.5" rx="2.6"/>
+          <path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/>
+          <circle cx="12" cy="15.7" r="1.3" fill="#B94A63" stroke="none"/>
+        </svg>
+        <span>只有我们两个人知道</span>
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <ol class="notes">
+      <li class="note">
+        <time datetime="2026-09-27">二〇二六年 九月廿七</time>
+        <p>从今天起，想对你说的话、想给你看的事，我都写在这里，一封一封慢慢攒。</p>
+      </li>
+      <li class="note">
+        <time datetime="2026-09-27">二〇二六年 九月廿七</time>
+        <p>不着急回我。你什么时候来，这里都亮着。</p>
+      </li>
+      <!-- ▼▼▼ 新的话插在上一行下面（add_note.py 会自动插到这里） ▼▼▼ -->
+    </ol>
+  </section>
+
+  <!-- 信箱 -->
+  <section class="post reveal" style="animation-delay:.74s">
+    <p class="hint">点一下信箱</p>
+
+    <button class="mailbox" id="mailbox" type="button" aria-expanded="false"
+            aria-label="打开信箱">
+      <span class="sr">打开信箱</span>
+      <svg viewBox="0 0 170 210" aria-hidden="true">
+        <ellipse cx="62" cy="200" rx="34" ry="6" fill="rgba(96,44,66,.10)"/>
+        <rect x="56" y="140" width="12" height="58" rx="6" fill="#D9C8B8"/>
+        <path d="M22 140V94a40 40 0 0 1 80 0v46z" fill="#BE4A63"/>
+        <path d="M22 140V94a40 40 0 0 1 80 0v46z" fill="none"
+              stroke="rgba(90,20,35,.18)" stroke-width="1.2"/>
+        <rect x="43" y="99" width="38" height="7" rx="3.5" fill="#6B2434" opacity=".5"/>
+        <path class="mb-door" d="M34 140V97a28 28 0 0 1 56 0v43z" fill="#A93A55"/>
+        <path class="mb-door" d="M34 140V97a28 28 0 0 1 56 0v43z" fill="none"
+              stroke="rgba(90,20,35,.22)" stroke-width="1.2"/>
+        <rect x="101" y="78" width="5" height="26" rx="2.5" fill="#C6A15B"/>
+        <path class="mb-flag" d="M106 80h22v15h-22z" fill="#D8778C"/>
+        <path class="mb-note" d="M44 96l18-9 18 9v13H44z" fill="#FFFDFB"
+              stroke="rgba(185,74,99,.35)" stroke-width="1.1"/>
+        <g class="burst">
+          <i style="--dx:-52px;--dy:-58px;--rot:-190deg"></i>
+          <i style="--dx:-18px;--dy:-74px;--rot:150deg"></i>
+          <i style="--dx:14px;--dy:-70px;--rot:210deg"></i>
+          <i style="--dx:48px;--dy:-48px;--rot:-140deg"></i>
+          <i style="--dx:66px;--dy:-14px;--rot:170deg"></i>
+          <i style="--dx:-66px;--dy:-18px;--rot:130deg"></i>
+        </g>
+      </svg>
+    </button>
+
+    <p class="after" id="after">信已经送到你手上了。<br>如果你也有一点点喜欢我，就笑一下，我会知道的。</p>
+  </section>
+
+  <p class="tail reveal" style="animation-delay:.86s">只写给<span>·</span>小蒙<span>·</span>看</p>
+
+</div>
+
+<script>
+(function(){
+  // ---- 花瓣：随机大小、速度、摆动，避免看出是同一批 ----
+  var box = document.querySelector('.petals');
+  if (box) {
+    for (var i = 0; i < 16; i++) {
+      var p = document.createElement('i');
+      p.className = 'petal';
+      var dur = 9 + Math.random() * 8;
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.animationDuration = dur + 's';
+      p.style.animationDelay = (-Math.random() * dur) + 's';
+      p.style.setProperty('--sz', (8 + Math.random() * 9).toFixed(1) + 'px');
+      p.style.setProperty('--sway', (Math.random() * 70 - 35).toFixed(0) + 'px');
+      p.style.setProperty('--spin', (240 + Math.random() * 360).toFixed(0) + 'deg');
+      box.appendChild(p);
+    }
+  }
+
+  // ---- 信箱：点开 / 再点收起来（可反复，不锁死） ----
+  var mb = document.getElementById('mailbox');
+  if (mb) {
+    mb.addEventListener('click', function(){
+      var open = mb.classList.toggle('is-open');
+      mb.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mb.setAttribute('aria-label', open ? '收起信箱' : '打开信箱');
+      var hint = document.querySelector('.post .hint');
+      if (hint) { hint.style.opacity = open ? '0' : '1'; }
+    });
+  }
+})();
+</script>
+</body>
+</html>
