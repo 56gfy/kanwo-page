@@ -1,5 +1,8 @@
 {
-  "home": "index.html",
+  "home": {
+    "name": "__selftest",
+    "entry": "__selftest.html"
+  },
   "pages": {
     "home": {
       "entry": "index.html",
