@@ -4,51 +4,24 @@
     "entry": "index.html"
   },
   "pages": {
-    "home": {
-      "entry": "index.html",
-      "title": "小蒙·只给你一个人看",
-      "sha256": "c77586cfa6e254a3d02005a2d2f50cd43e2f28fe05641dfd25306fbe33519f54",
-      "bytes": 18426,
-      "updated": "2026-09-27 00:24"
-    },
-    "weather": {
-      "entry": "weather.html",
-      "title": "天气·苍梧",
-      "sha256": "264b088d35c40b9c977e2d34e381997a0ffa1a587a4c454f3789362d1cfaa62f",
-      "bytes": 14885,
-      "updated": "2026-09-26 23:55"
-    },
-    "xiaomeng": {
-      "entry": "xiaomeng.html",
-      "title": "给小蒙",
-      "sha256": "c77586cfa6e254a3d02005a2d2f50cd43e2f28fe05641dfd25306fbe33519f54",
-      "bytes": 18426,
-      "updated": "2026-09-27 00:29",
-      "prev_sha256": null
-    },
-    "ai-news": {
-      "entry": "ai-news.html",
-      "title": "AI 动态 · 九月",
-      "sha256": "bc94a24a4c53027f2399b54ad760965ceb5a8d9c22cdf486ccd30b880ca1b156",
-      "bytes": 16981,
-      "updated": "2026-09-27 00:32",
-      "prev_sha256": null
-    },
-    "photos": {
-      "entry": "photos/index.html",
-      "title": "AI 动态 · 九月",
-      "sha256": "bc94a24a4c53027f2399b54ad760965ceb5a8d9c22cdf486ccd30b880ca1b156",
-      "bytes": 16981,
-      "updated": "2026-09-27 01:04",
-      "prev_sha256": null
-    },
     "ourstory": {
       "entry": "index.html",
       "title": "我们的故事",
-      "sha256": "666d3372eda6bb91d5bd7aab4bacd10b997dbd2fe6a5c9f7143d16660c5af17c",
       "bytes": 6507,
-      "updated": "2026-09-27 01:09",
-      "prev_sha256": "666d3372eda6bb91d5bd7aab4bacd10b997dbd2fe6a5c9f7143d16660c5af17c"
+      "updated": "2026-09-27 01:15",
+      "root": true
+    },
+    "xiaomeng": {
+      "entry": "xiaomeng.html",
+      "title": "给小蒙"
+    },
+    "ai-news": {
+      "entry": "ai-news.html",
+      "title": "AI 动态 · 九月"
+    },
+    "weather": {
+      "entry": "weather.html",
+      "title": "天气 · 苍梧"
     }
   }
 }
