@@ -1,0 +1,15 @@
+{
+  "home": "index.html",
+  "pages": {
+    "home": {
+      "entry": "index.html",
+      "title": "小蒙·只给你一个人看",
+      "updated": "2026-09-27 00:16"
+    },
+    "weather": {
+      "entry": "weather.html",
+      "title": "天气·苍梧",
+      "updated": "2026-09-26 23:55"
+    }
+  }
+}
