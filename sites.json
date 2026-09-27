@@ -1,7 +1,7 @@
 {
   "home": {
-    "name": "ourstory",
-    "entry": "index.html"
+    "name": "kanwo-intro",
+    "entry": "kanwo-intro.html"
   },
   "pages": {
     "ourstory": {
@@ -23,6 +23,14 @@
     "weather": {
       "entry": "weather.html",
       "title": "天气 · 苍梧"
+    },
+    "kanwo-intro": {
+      "entry": "kanwo-intro.html",
+      "title": "看我 · KANWO — 一打开就看见",
+      "sha256": "d349d982dfef85db1a213312beb629df4430bd93f89ce6f315dbc8c926b05165",
+      "bytes": 35651,
+      "updated": "2026-09-27 09:00",
+      "prev_sha256": null
     }
   }
 }
