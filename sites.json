@@ -14,15 +14,21 @@
     },
     "xiaomeng": {
       "entry": "xiaomeng.html",
-      "title": "给小蒙"
+      "title": "给小蒙",
+      "sha256": "c77586cfa6e254a3d02005a2d2f50cd43e2f28fe05641dfd25306fbe33519f54",
+      "bytes": 18426
     },
     "ai-news": {
       "entry": "ai-news.html",
-      "title": "AI 动态 · 九月"
+      "title": "AI 动态 · 九月",
+      "sha256": "bc94a24a4c53027f2399b54ad760965ceb5a8d9c22cdf486ccd30b880ca1b156",
+      "bytes": 16981
     },
     "weather": {
       "entry": "weather.html",
-      "title": "天气 · 苍梧"
+      "title": "天气 · 苍梧",
+      "sha256": "264b088d35c40b9c977e2d34e381997a0ffa1a587a4c454f3789362d1cfaa62f",
+      "bytes": 14885
     },
     "kanwo-intro": {
       "entry": "kanwo-intro.html",
