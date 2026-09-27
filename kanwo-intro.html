@@ -136,19 +136,29 @@ h1.tw::after{color:#e879f9;clip-path:inset(56% 0 0 0);opacity:0;animation:g2 5.2
   margin-left:3px;box-shadow:0 0 9px var(--cyan);animation:cur .9s steps(1) infinite}
 @keyframes cur{50%{opacity:0}}
 .cta-row{margin-top:34px;display:flex;flex-wrap:wrap;gap:13px;justify-content:center}
+a,button,[role=button],.btn{-webkit-tap-highlight-color:transparent}
 .btn{position:relative;display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 26px;
   border-radius:999px;font-size:14.5px;font-weight:600;letter-spacing:.03em;
-  border:1px solid var(--line2);overflow:hidden;transition:transform .3s var(--ease),border-color .3s,box-shadow .35s}
-.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  border:1px solid var(--line2);overflow:hidden;isolation:isolate;
+  -webkit-tap-highlight-color:transparent;
+  transform:translateZ(0);                     /* 强制独立合成层：让圆角裁切在 WebView 里可靠生效 */
+  transition:transform .3s var(--ease),border-color .3s,box-shadow .35s;
+  box-shadow:0 0 0 0 rgba(34,211,238,0)}
+.btn:focus-visible{outline:none;               /* 弃用 outline：它在 WebView 里会是直角 */
+  box-shadow:0 0 0 3px rgba(34,211,238,.9),0 0 30px 3px rgba(34,211,238,.5)}
 .btn.primary{background:linear-gradient(100deg,rgba(56,189,248,.22),rgba(168,85,247,.2));color:#eaf7ff;
-  box-shadow:0 0 0 0 rgba(56,189,248,.4),inset 0 1px 0 rgba(255,255,255,.09)}
-.btn.primary::before{content:"";position:absolute;inset:0;
-  background:linear-gradient(100deg,transparent 28%,rgba(160,230,255,.5) 50%,transparent 72%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09)}
+.btn.primary::before{content:"";position:absolute;inset:0;border-radius:inherit;
+  -webkit-border-radius:inherit;background:linear-gradient(100deg,transparent 28%,rgba(160,230,255,.5) 50%,transparent 72%);
   transform:translateX(-130%);animation:sheen 3.6s var(--ease) infinite}
 @keyframes sheen{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
 .btn.ghost{background:rgba(10,16,28,.6);color:#a9bdd4}
-.btn:hover{transform:translateY(-2px);border-color:rgba(140,220,255,.55);
+.btn:hover{transform:translate3d(0,-2px,0);border-color:rgba(140,220,255,.55);
   box-shadow:0 12px 34px -12px rgba(56,189,248,.6)}
+.btn:active{transform:translate3d(0,-1px,0) scale(.985);
+  border-color:rgba(170,240,255,.9);
+  box-shadow:0 0 0 2px rgba(34,211,238,.5),0 0 34px 5px rgba(56,189,248,.6)}  /* 按下发光：跟随圆角 */
+.btn:active::before{opacity:0}
 .arr{display:inline-block;transition:transform .3s var(--ease)}
 .btn:hover .arr{transform:translateX(4px)}
 
