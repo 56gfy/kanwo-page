@@ -239,6 +239,57 @@ footer{position:relative;z-index:3;text-align:center;padding:34px 22px 62px;bord
   transition-delay:var(--d,0ms)}
 .rv.on{opacity:1;transform:none}
 
+/* ---------- 奔跑字幕带 ---------- */
+.tickerband{position:relative;overflow:hidden;border-top:1px solid rgba(120,190,255,.13);
+  border-bottom:1px solid rgba(120,190,255,.13);background:rgba(5,9,17,.72);
+  padding:13px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.ticker{display:flex;gap:0;width:max-content;animation:tick 26s linear infinite;
+  animation-duration:calc(26s / (1 + var(--spd, 0) * 6));
+  will-change:transform}
+.tickerband:active .ticker{animation-play-state:paused}
+@keyframes tick{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.ticker span{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:#8fb6d8;
+  white-space:nowrap;padding:0 18px;text-transform:uppercase}
+.ticker span b{color:var(--cyan);font-weight:600}
+.ticker span i{color:var(--magenta);font-style:normal}
+.ticker em{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--cyan);
+  vertical-align:middle;margin-right:10px;box-shadow:0 0 10px var(--cyan)}
+
+/* ---------- 手指光轨 ---------- */
+#trail{position:fixed;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;display:block;
+  mix-blend-mode:screen}
+
+/* ---------- 滚动速度（驱动字幕带转速 / 光轨强度） ---------- */
+:root{--spd:0}
+
+/* ---------- Hero 视差 ---------- */
+#hero .hero-inner{transform:translate3d(0,calc(var(--hy,0) * 1px),0);opacity:var(--hop,1);
+  transition:opacity .25s linear}
+.eye-wrap{transform:translate3d(0,calc(var(--ey,0) * 1px),0) scale(var(--es,1));
+  transition:transform .2s linear}
+
+/* ---------- 磁吸按钮 ---------- */
+.btn{--mx2:0px;--my2:0px}
+.btn.primary,.btn.ghost{margin-left:0}
+.mag-inner{display:inline-flex;align-items:center;gap:10px;
+  transform:translate3d(var(--mx2),var(--my2),0);transition:transform .38s var(--ease);pointer-events:none}
+
+/* ---------- 更夸张的揭示 ---------- */
+.rv{transform:translate3d(0,34px,0)}
+.item.rv{transform:translate3d(11px,22px,0) rotate(-.8deg)}
+.item.rv.on{transform:none}
+.card.rv{transform:translate3d(0,40px,0) rotateX(-13deg) scale(.94);transform-origin:50% 100%}
+.card.rv.on{transform:none}
+.stat.rv{transform:translate3d(0,30px,0) scale(.86)}
+.stat.rv.on{transform:none}
+h1.tw.rv{transform:translate3d(0,0,0) scale(.86);filter:drop-shadow(0 0 34px rgba(56,189,248,0))}
+h1.tw.rv.on{transform:none;filter:drop-shadow(0 0 34px rgba(56,189,248,.34))}
+h1.tw{transition:transform 1s var(--ease),filter 1.1s var(--ease),opacity .9s var(--ease)}
+
+/* ---------- 触摸拖拽卡片 ---------- */
+.card{touch-action:pan-y}
+
 @media(min-width:780px){
   .sec{padding:132px 40px}
   .hero-inner{flex-direction:row;text-align:left;gap:60px;align-items:center}
@@ -271,6 +322,7 @@ footer{position:relative;z-index:3;text-align:center;padding:34px 22px 62px;bord
 
 <!-- 背景 -->
 <canvas id="fx" aria-hidden="true"></canvas>
+<canvas id="trail" aria-hidden="true"></canvas>
 <div id="grid" aria-hidden="true"></div>
 <div id="spot" aria-hidden="true"></div>
 <div id="scan" aria-hidden="true"></div>
@@ -284,6 +336,11 @@ footer{position:relative;z-index:3;text-align:center;padding:34px 22px 62px;bord
 <div class="hud hud-bot" aria-hidden="true">
   <span id="coord">X 000 &nbsp;Y 000</span>
   <span id="scrollpct">SCROLL 000%</span>
+</div>
+
+<!-- 奔跑字幕带 -->
+<div class="tickerband" aria-hidden="true" style="position:relative;z-index:3">
+  <div class="ticker" id="ticker"></div>
 </div>
 
 <main>
@@ -336,8 +393,8 @@ footer{position:relative;z-index:3;text-align:center;padding:34px 22px 62px;bord
       <h1 class="tw rv" data-text="看我" style="--d:180ms">看我</h1>
       <p class="lead" id="lead"></p>
       <div class="cta-row rv" style="--d:420ms">
-        <a class="btn primary" href="#feed">看我在更新什么 <span class="arr">&rarr;</span></a>
-        <a class="btn ghost" href="#how">它是怎么跑的</a>
+        <a class="btn primary" href="#feed"><span class="mag-inner">看我在更新什么 <span class="arr">&rarr;</span></span></a>
+        <a class="btn ghost" href="#how"><span class="mag-inner">它是怎么跑的</span></a>
       </div>
     </div>
   </div>
@@ -717,6 +774,168 @@ $$('.card').forEach(function(c){
   setTimeout(done,4200);                       /* 兜底：任何情况下都不卡在开机页 */
   boot.addEventListener('click',done);
 })();
+
+/* ============ 11. 奔跑字幕带 ============ */
+(function(){
+  var t=$('#ticker'); if(!t) return;
+  var items=['<b>KANWO</b> 看我','打开即最新','无需登录','公告置顶',
+             '实时同步','<i>ONE APP</i>','专注一件事','你打开，我就在'];
+  var seg='';
+  for(var i=0;i<items.length;i++) seg+='<span><em></em>'+items[i]+'</span>';
+  t.innerHTML=seg+seg;                 /* 双份：无缝循环 */
+})();
+
+/* ============ 12. 手指光轨（夸张拖尾） ============ */
+(function(){
+  var c=$('#trail'); if(!c||RM) return;
+  var g=c.getContext('2d'), W=1,H=1, last=null, trail=[], raf_on=false;
+  function size(){
+    W=c.clientWidth||window.innerWidth; H=c.clientHeight||window.innerHeight;
+    c.width=Math.round(W*DPR); c.height=Math.round(H*DPR);
+    g.setTransform(DPR,0,0,DPR,0,0);
+  }
+  size();
+  window.addEventListener('resize',size);
+  function push(x,y){
+    var spd=parseFloat(root.style.getPropertyValue('--spd'))||0;   /* 滚得越快，光轨越粗越长 */
+    var boost=1+spd*1.5;
+    if(last){
+      var dx=x-last.x, dy=y-last.y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d>1.5){
+        var n=Math.min(26,Math.max(1,Math.round(d/5)));
+        for(var i=1;i<=n;i++){
+          trail.push({x:last.x+dx*i/n, y:last.y+dy*i/n, life:1,
+                      w:Math.min(11,3+d*0.09)*boost});
+        }
+      }
+    }
+    last={x:x,y:y};
+    if(trail.length>230) trail.splice(0,trail.length-230);
+    if(!raf_on){ raf_on=true; raf(draw); }
+  }
+  function draw(){
+    g.clearRect(0,0,W,H);
+    g.globalCompositeOperation='lighter';
+    for(var i=0;i<trail.length;i++){
+      var p=trail[i]; p.life-=0.028;
+      if(p.life<=0) continue;
+      var r=p.w*(0.35+p.life*1.3), a=p.life*p.life*0.8;
+      var grd=g.createRadialGradient(p.x,p.y,0,p.x,p.y,r);
+      grd.addColorStop(0,'rgba(190,244,255,'+(a*0.95).toFixed(3)+')');
+      grd.addColorStop(0.42,'rgba(56,189,248,'+(a*0.5).toFixed(3)+')');
+      grd.addColorStop(1,'rgba(139,92,246,0)');
+      g.fillStyle=grd;
+      g.beginPath(); g.arc(p.x,p.y,r,0,6.2832); g.fill();
+    }
+    trail=trail.filter(function(p){ return p.life>0; });
+    if(trail.length){ raf(draw); } else { g.clearRect(0,0,W,H); raf_on=false; }
+  }
+  window.addEventListener('pointermove',function(e){ push(e.clientX,e.clientY); },{passive:true});
+  window.addEventListener('touchstart',function(e){
+    last=null;
+    var t0=e.touches&&e.touches[0]; if(t0) push(t0.clientX,t0.clientY);
+  },{passive:true});
+  window.addEventListener('touchmove',function(e){
+    var t0=e.touches&&e.touches[0]; if(t0) push(t0.clientX,t0.clientY);
+  },{passive:true});
+  window.addEventListener('pointerdown',function(e){ push(e.clientX,e.clientY); },{passive:true});
+})();
+
+/* ============ 13. 滚动速度 → 字幕带狂飙 + 光轨增强 + Hero 视差 ============ */
+(function(){
+  var lastY=window.pageYOffset||0, vel=0, idle=null;
+  function apply(){
+    var spd=Math.max(-1,Math.min(3.2, Math.abs(vel)/26));
+    root.style.setProperty('--spd', spd.toFixed(3));
+  }
+  function onVel(){
+    var y=window.pageYOffset||0;
+    var d=y-lastY; lastY=y;
+    vel = vel*0.7 + d*0.3;
+    if(!RM) apply();
+    /* Hero 视差：往下滚，内容轻微上抬并淡出、义眼下沉缩小 */
+    if(!RM){
+      var p=Math.min(1, y/600);
+      root.style.setProperty('--hy', (-p*46).toFixed(1));
+      root.style.setProperty('--hop', (1-p*0.96).toFixed(3));
+      root.style.setProperty('--ey', (p*58).toFixed(1));
+      root.style.setProperty('--es', (1-p*0.15).toFixed(3));
+    }
+    if(!idle){
+      idle=setInterval(function(){
+        vel*=0.8;
+        if(!RM) apply();
+        if(Math.abs(vel)<0.4){ clearInterval(idle); idle=null; vel=0;
+          root.style.setProperty('--spd','0'); }
+      },70);
+    }
+  }
+  window.addEventListener('scroll',onVel,{passive:true});
+})();
+
+/* ============ 14. 磁吸按钮（跟随指针；监听挂父容器，边角靠近也响应） ============ */
+$$('.btn').forEach(function(btn){
+  var inner=$('.mag-inner',btn); if(!inner) return;
+  var host=btn.parentElement||btn;
+  var cur={x:0,y:0}, tgt={x:0,y:0}, ticking=false;
+  function loop(){
+    cur.x+=(tgt.x-cur.x)*0.22; cur.y+=(tgt.y-cur.y)*0.22;
+    inner.style.setProperty('--mx2', cur.x.toFixed(2)+'px');
+    inner.style.setProperty('--my2', cur.y.toFixed(2)+'px');
+    if(Math.abs(tgt.x-cur.x)>0.14||Math.abs(tgt.y-cur.y)>0.14) raf(loop);
+    else { ticking=false;
+      inner.style.setProperty('--mx2', tgt.x.toFixed(2)+'px');
+      inner.style.setProperty('--my2', tgt.y.toFixed(2)+'px'); }
+  }
+  host.addEventListener('pointermove',function(e){
+    if(RM||e.pointerType==='touch') return;
+    var r=btn.getBoundingClientRect();
+    tgt.x=(e.clientX-(r.left+r.width/2))*0.26;
+    tgt.y=(e.clientY-(r.top+r.height/2))*0.34;
+    tgt.x=Math.max(-14,Math.min(14,tgt.x)); tgt.y=Math.max(-10,Math.min(10,tgt.y));
+    if(!ticking){ ticking=true; raf(loop); }
+  });
+  host.addEventListener('pointerleave',function(){ tgt.x=0; tgt.y=0; if(!ticking){ticking=true;raf(loop);} });
+});
+
+/* ============ 15. 触摸拖拽卡片（跟手位移 + 回弹） ============ */
+if(!RM && ('ontouchstart' in window || navigator.maxTouchPoints>0)){
+  $$('.card').forEach(function(card){
+    var sx=0, sy=0, dx=0, dy=0, dragging=false, locked=null;
+    function reset(anim){
+      card.style.transition = anim? 'transform .55s cubic-bezier(.16,1,.3,1)' : 'none';
+      card.style.transform='translate3d(0,0,0)';
+      setTimeout(function(){ card.style.transition=''; },560);
+    }
+    card.addEventListener('touchstart',function(e){
+      var t0=e.touches[0]; sx=t0.clientX; sy=t0.clientY; dx=dy=0; dragging=true; locked=null;
+      card.classList.add('sk-live');
+    },{passive:true});
+    card.addEventListener('touchmove',function(e){
+      if(!dragging) return;
+      var t0=e.touches[0];
+      var nx=t0.clientX-sx, ny=t0.clientY-sy;
+      if(locked===null){
+        if(Math.abs(nx)>Math.abs(ny)+4 && Math.abs(nx)>7) locked='x';
+        else if(Math.abs(ny)>Math.abs(nx)+4 && Math.abs(ny)>7) locked='y';
+        else return;
+      }
+      if(locked==='y'){ return; }                 /* 竖向交给页面滚动 */
+      if(e.cancelable) e.preventDefault();
+      dx=Math.max(-110,Math.min(110,nx));
+      dy=Math.max(-28,Math.min(28,ny*0.2));
+      card.style.transition='none';
+      card.style.transform='translate3d('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px,10px) rotate('+(dx*0.05).toFixed(2)+'deg)';
+    },{passive:false});
+    function end(){
+      if(!dragging) return; dragging=false;
+      card.classList.remove('sk-live');
+      reset(true);
+    }
+    card.addEventListener('touchend',end);
+    card.addEventListener('touchcancel',end);
+  });
+}
 
 /* ============ 10. 启动 + 联动 ============ */
 function kick(){
