@@ -27,10 +27,10 @@
     "kanwo-intro": {
       "entry": "kanwo-intro.html",
       "title": "看我 · KANWO — 一打开就看见",
-      "sha256": "381539d5a95a92d8dfa3e21d69b2f79ab9c8cbf10e088e0ee569df47242adc09",
-      "bytes": 36320,
-      "updated": "2026-09-27 09:05",
-      "prev_sha256": "d349d982dfef85db1a213312beb629df4430bd93f89ce6f315dbc8c926b05165"
+      "sha256": "6e288eadef682fe2343da721b1d85e45bfcfe2310caa4ee6a65bd027c34e9d6b",
+      "bytes": 45920,
+      "updated": "2026-09-27 09:15",
+      "prev_sha256": "381539d5a95a92d8dfa3e21d69b2f79ab9c8cbf10e088e0ee569df47242adc09"
     }
   }
 }
