@@ -5,7 +5,7 @@
   },
   "pages": {
     "ourstory": {
-      "entry": "index.html",
+      "entry": "ourstory.html",
       "title": "我们的故事",
       "sha256": "343ad74a76a41eb2e88a15e2248212a942d7ee07d2e01f1204f2821531a995f4",
       "bytes": 9217,
