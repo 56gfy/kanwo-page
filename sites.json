@@ -7,10 +7,10 @@
     "ourstory": {
       "entry": "index.html",
       "title": "我们的故事",
-      "sha256": "23895cda81f17425414ef1836002f09683faec60b29353422910092196ed6480",
-      "bytes": 10234,
-      "updated": "2026-09-27 01:33",
-      "prev_sha256": "2ba9bbff9fe6bd25e8c6ae33ba5bd02138756e06be5a11b5db71c2cff4cc0508"
+      "sha256": "403984b67d3fb0d182970ccc63e0f28f3886c8660e2ec80d89e7d010269a3b19",
+      "bytes": 8958,
+      "updated": "2026-09-27 08:02",
+      "prev_sha256": "23895cda81f17425414ef1836002f09683faec60b29353422910092196ed6480"
     },
     "xiaomeng": {
       "entry": "xiaomeng.html",
