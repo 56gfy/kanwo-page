@@ -1,7 +1,7 @@
 {
   "home": {
-    "name": "kanwo-intro",
-    "entry": "kanwo-intro.html"
+    "name": "miss-you",
+    "entry": "miss-you.html"
   },
   "pages": {
     "ourstory": {
@@ -31,6 +31,14 @@
       "bytes": 45920,
       "updated": "2026-09-27 09:15",
       "prev_sha256": "381539d5a95a92d8dfa3e21d69b2f79ab9c8cbf10e088e0ee569df47242adc09"
+    },
+    "miss-you": {
+      "entry": "miss-you.html",
+      "title": "臭蒙 · 想你想你",
+      "sha256": "d084e39b7270efb45645cf4ec1e1a0b6082b154dfe497343eccb68a955b8af80",
+      "bytes": 27416,
+      "updated": "2026-09-27 09:35",
+      "prev_sha256": null
     }
   }
 }
