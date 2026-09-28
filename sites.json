@@ -12,14 +12,6 @@
       "updated": "2026-09-28 11:59",
       "prev_sha256": null
     },
-    "today": {
-      "entry": "today.html",
-      "title": "今日事 · 九月廿八",
-      "sha256": "1ba1c8f0d7792f7a6213b03bea5191929beb590c09160638b76f4312edf213a4",
-      "bytes": 32795,
-      "updated": "2026-09-28 11:59",
-      "prev_sha256": null
-    },
     "essay": {
       "entry": "essay.html",
       "title": "把日子过成一句一句的话",
