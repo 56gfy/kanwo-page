@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF3F6">
+<title>我们的故事</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(128% 76% at 50% 0%,#FFFDFE 0%,#FFF2F6 42%,#FBE1EA 100%);
+  background-attachment:fixed;
+  color:#4A2B38;
+  font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+main{
+  padding:calc(env(safe-area-inset-top,0px) + 40px) 22px
+          calc(env(safe-area-inset-bottom,0px) + 52px);
+  max-width:640px;margin:0 auto;
+}
+
+/* ---------- 头 ---------- */
+.hd{text-align:center;margin-bottom:32px}
+.to{margin:0 0 15px;font-size:12px;letter-spacing:.44em;text-indent:.44em;color:#D98BA6}
+h1{
+  margin:0;font-family:"Songti SC","STSong","SimSun","Noto Serif SC",serif;
+  font-size:clamp(31px,9.4vw,43px);line-height:1.24;font-weight:600;
+  letter-spacing:.05em;color:#43202F;
+}
+h1 .sub{
+  display:block;margin-top:9px;font-size:.58em;font-weight:400;
+  letter-spacing:.22em;text-indent:.22em;color:#E0618F;
+}
+.rule{width:46px;height:1px;margin:26px auto 0;
+  background:linear-gradient(90deg,transparent,#F2A8C4,transparent)}
+
+/* ---------- 开场白 ---------- */
+.lead{margin:0 0 40px;text-align:center}
+.lead p{
+  margin:0 0 15px;font-size:14px;line-height:2.05;letter-spacing:.03em;color:#8A6272;
+  font-family:"Songti SC","STSong","SimSun",serif;
+}
+.lead p:last-child{margin-bottom:0}
+.lead .soft{color:#A98A97}
+
+/* ---------- 照片 ---------- */
+.wall{display:block}
+.wrap{margin:0 0 40px}
+.wrap:last-child{margin-bottom:0}
+
+.shot{
+  position:relative;margin:0;background:#FFFBFC;
+  padding:8px 8px 26px;border-radius:3px;
+  box-shadow:0 14px 31px -16px rgba(176,88,120,.38),
+             0 3px 9px -5px rgba(176,88,120,.16);
+}
+/* 照片区：比例由每张图自己的真实比例给出（行内 aspect-ratio），
+   绝不用固定比例硬切 —— 那会把竖图上下砍掉一大截。 */
+.ph{position:relative;overflow:hidden;border-radius:2px;background:#FFF6F9;width:100%}
+.ph img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  transform-origin:center;
+  animation:drift 15s ease-in-out infinite alternate;
+  will-change:transform;
+}
+/* 每张的漂移节奏/方向都不同 —— 整页看过去是「活的」，不是整齐划一。
+   只用 translate，不用 scale：缩放会让照片在框里被裁掉一圈。 */
+.wrap:nth-child(4n+1) .ph img{animation-duration:14s}
+.wrap:nth-child(4n+2) .ph img{animation-duration:18s;animation-direction:alternate-reverse}
+.wrap:nth-child(4n+3) .ph img{animation-duration:16s}
+.wrap:nth-child(4n+4) .ph img{animation-duration:20s;animation-direction:alternate-reverse}
+@keyframes drift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-4px,-7px,0)}
+}
+/* 相纸反光：偶尔慢慢掠过一次 */
+.ph::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(104deg,transparent 38%,rgba(255,255,255,.50) 50%,transparent 62%);
+  transform:translateX(-120%);
+  animation:sheen 8.5s ease-in-out infinite;
+}
+.wrap:nth-child(3n+2) .ph::after{animation-delay:2.6s}
+.wrap:nth-child(3n) .ph::after{animation-delay:5s}
+@keyframes sheen{
+  0%{transform:translateX(-120%)}
+  42%,100%{transform:translateX(120%)}
+}
+
+.no{
+  position:absolute;left:10px;right:10px;bottom:8px;
+  font-size:9.5px;line-height:1;letter-spacing:.26em;
+  color:#E39CB6;text-align:right;
+  font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+.rot-l{rotate:-1.05deg}
+.rot-r{rotate:.85deg}
+.rot-s{rotate:-.5deg}
+
+/* 配文 */
+.cap{
+  margin:15px 4px 0;font-size:13.5px;line-height:1.98;letter-spacing:.035em;
+  color:#8E6B79;text-align:center;
+  font-family:"Songti SC","STSong","SimSun",serif;
+}
+.cap b{color:#DE4C81;font-weight:600}
+
+/* 单图收窄，别让脸糊满屏 */
+.solo{max-width:76%;margin-left:auto;margin-right:auto}
+
+/* ---------- 尾 ---------- */
+.ft{text-align:center;margin-top:48px}
+.ft .line{width:92px;height:1px;margin:0 auto 26px;
+  background:linear-gradient(90deg,transparent,#F3BDD2,transparent)}
+.ft .end{
+  margin:0 0 26px;font-size:14px;line-height:2.05;letter-spacing:.035em;color:#8A6272;
+  font-family:"Songti SC","STSong","SimSun",serif;
+}
+.seal{
+  display:inline-block;width:30px;height:30px;line-height:30px;
+  background:#E0618F;color:#FFF6F9;border-radius:50%;
+  font-family:"Songti SC","STSong","SimSun",serif;
+  font-size:15px;text-align:center;
+  box-shadow:0 4px 12px -6px rgba(224,97,143,.72);
+}
+.date{margin:14px 0 0;font-size:11px;letter-spacing:.3em;text-indent:.3em;color:#B694A2;
+  font-family:"Songti SC","STSong","SimSun",serif}
+
+/* ---------- 入场（脚本可用时才启用）---------- */
+.js .hd,.js .lead,.js .wrap,.js .ft{opacity:0;transform:translateY(20px)}
+.js .in{
+  opacity:1;
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,.7,.24,1);
+  transform:translateY(0);
+}
+@media (prefers-reduced-motion:reduce){
+  .js .hd,.js .lead,.js .wrap,.js .ft,.js .in{opacity:1;transform:none;transition:none}
+  .ph img,.ph::after{animation:none}
+}
+</style>
+</head>
+<body>
+
+<main>
+  <header class="hd">
+    <p class="to">小蒙</p>
+    <h1>我们的故事<span class="sub">才刚刚开始</span></h1>
+    <div class="rule"></div>
+  </header>
+
+  <section class="lead">
+    <p>把这些日子一张一张收好，<br>像把喜欢叠进抽屉里。</p>
+    <p>没有什么惊天动地的大事，<br>都是些很小、很亮的瞬间。</p>
+    <p class="soft">每一次回头看你，<br>都觉得还没看够。</p>
+  </section>
+
+  <section class="wall">
+
+    <div class="wrap rot-l solo">
+      <figure class="shot">
+        <div class="ph" style="aspect-ratio:640/854">
+          <img src="photos/p1.jpg" alt="" width="640" height="854">
+        </div>
+        <figcaption class="no">01</figcaption>
+      </figure>
+      <p class="cap">你比了个 V，<br>一整条路都跟着亮了。</p>
+    </div>
+
+    <div class="wrap rot-r solo">
+      <figure class="shot">
+        <div class="ph" style="aspect-ratio:640/1138">
+          <img src="photos/p2.jpg" alt="" width="640" height="1138">
+        </div>
+        <figcaption class="no">02</figcaption>
+      </figure>
+      <p class="cap">猫耳朵一戴上，<br>你就变回了小孩。</p>
+    </div>
+
+    <div class="wrap rot-s solo">
+      <figure class="shot">
+        <div class="ph" style="aspect-ratio:640/853">
+          <img src="photos/p3.jpg" alt="" width="640" height="853">
+        </div>
+        <figcaption class="no">03</figcaption>
+      </figure>
+      <p class="cap">两杯都是冰的，<br>一杯给我，一杯替你端着。</p>
+    </div>
+
+    <div class="wrap rot-l solo">
+      <figure class="shot">
+        <div class="ph" style="aspect-ratio:640/1138">
+          <img src="photos/p4.jpg" alt="" width="640" height="1138">
+        </div>
+        <figcaption class="no">04</figcaption>
+      </figure>
+      <p class="cap">后座那小家伙抢了镜，<br><b>你回头喊我看。</b></p>
+    </div>
+
+  </section>
+
+  <footer class="ft">
+    <div class="line"></div>
+    <p class="end">往后的日子还很长，<br>我想慢慢陪你走完。</p>
+    <span class="seal">蒙</span>
+    <p class="date">二〇二六年九月</p>
+  </footer>
+</main>
+
+<script>
+/* 入场动画：脚本可用才启用，且【绝不允许内容永久停在看不见】。
+   IntersectionObserver 快速滑动会整段漏触发 → 挂 scroll 兜底 + 定时强揭。 */
+(function(){
+  var root=document.documentElement;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    return;
+  }
+  root.classList.add('js');
+  var nodes=[].slice.call(document.querySelectorAll('.hd,.lead,.wrap,.ft'));
+  var pending=nodes.slice();
+
+  function sweep(final){
+    if(!pending.length) return;
+    var limit=window.innerHeight*1.02;
+    for(var i=pending.length-1;i>=0;i--){
+      var el=pending[i];
+      if(final||el.getBoundingClientRect().top<=limit){
+        el.classList.add('in');
+        pending.splice(i,1);
+      }
+    }
+  }
+
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        e.target.classList.add('in');
+        var i=pending.indexOf(e.target);
+        if(i>=0) pending.splice(i,1);
+        io.unobserve(e.target);
+      });
+    },{rootMargin:'0px 0px -8% 0px',threshold:.05});
+    nodes.forEach(function(n){io.observe(n);});
+  } else {
+    sweep(true);
+  }
+
+  window.addEventListener('scroll',function(){sweep(false);},{passive:true});
+  window.addEventListener('resize',function(){sweep(false);},{passive:true});
+  window.addEventListener('load',function(){sweep(false);});
+  setTimeout(function(){sweep(true);},2400);
+  sweep(false);
+})();
+</script>
+</body>
+</html>
