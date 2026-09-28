@@ -1,31 +1,23 @@
 {
   "home": {
-    "name": "intro-new",
-    "entry": "intro-new.html"
+    "name": "tech-boot",
+    "entry": "tech-boot.html"
   },
   "pages": {
-    "intro-new": {
-      "entry": "intro-new.html",
-      "title": "这里装着我想对你说的所有话",
-      "sha256": "acda90c8e92b772d09805a7ff104f5e527bbb5c95e13df3a3bc39831d02d64da",
-      "bytes": 31579,
-      "updated": "2026-09-28 17:36",
+    "tech-boot": {
+      "entry": "tech-boot.html",
+      "title": "kanwo-core · boot",
+      "sha256": "ff5bbc4d37487bbf1c4a75a9c07a79562da6b97fbc330075f73e65c278343476",
+      "bytes": 11425,
+      "updated": "2026-09-28 17:48",
       "prev_sha256": null
     },
-    "miss-you": {
-      "entry": "miss-you-clean.html",
-      "title": "臭蒙 · 想你想你",
-      "sha256": "d084e39b7270efb45645cf4ec1e1a0b6082b154dfe497343eccb68a955b8af80",
-      "bytes": 27416,
-      "updated": "2026-09-28 17:36",
-      "prev_sha256": null
-    },
-    "ourstory": {
-      "entry": "ourstory.html",
-      "title": "我们的故事",
-      "sha256": "7e88570517e8231c231e5869cd4e8df4bed8a52d2368266049cfd0a1a63b0236",
-      "bytes": 8964,
-      "updated": "2026-09-28 17:36",
+    "tech-console": {
+      "entry": "tech-console.html",
+      "title": "kanwo-core · console",
+      "sha256": "0ef29525cf0ff6dd373c768ee6a36a4f84d20063100d0fe8361923d4c7aab974",
+      "bytes": 10704,
+      "updated": "2026-09-28 17:48",
       "prev_sha256": null
     }
   }
