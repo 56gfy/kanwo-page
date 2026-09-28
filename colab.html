@@ -66,6 +66,26 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 #share:active{transform:translateY(1px)}
 
+/* ---------- 窄屏收紧（320~365 机型，实测 320 会挤出顶栏） ---------- */
+#bar>*{min-width:0}
+@media (max-width:365px){
+  #bar{gap:6px;padding-left:10px;padding-right:10px}
+  #brand{display:none}
+  #roomchip{padding:4px 8px;font-size:11px;max-width:32vw}
+  #status{padding:4px 8px;font-size:11px;gap:4px}
+  #status .txt{display:none}
+  #share{padding:6px 9px;font-size:12px}
+  #share .txt{display:none}
+  #tools{gap:8px}
+  #tools .row{gap:6px}
+  .tool{padding:0 9px}
+  #meHint{display:none}
+}
+@media (max-width:335px){
+  #roomchip{max-width:26vw;padding:4px 7px}
+  .lbl{display:none}
+}
+
 /* ---------- stage ---------- */
 #stage{
   flex:1 1 auto;position:relative;display:grid;place-items:center;
@@ -169,10 +189,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   <span id="roomchip" title="房间号（两个人必须一致）">房间 <b id="roomcode">—</b></span>
   <span id="spacer"></span>
   <span id="peers"></span>
-  <span id="status"><i id="sdot"></i><span id="stext">连接中</span></span>
+  <span id="status"><i id="sdot"></i><span id="stext" class="txt">连接中</span></span>
   <button id="share" aria-label="分享链接">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-    邀请
+    <span class="txt">邀请</span>
   </button>
 </header>
 
