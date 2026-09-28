@@ -1,49 +1,31 @@
 {
   "home": {
-    "name": "miss-you",
-    "entry": "miss-you.html"
+    "name": "intro-new",
+    "entry": "intro-new.html"
   },
   "pages": {
-    "ourstory": {
-      "entry": "ourstory.html",
-      "title": "我们的故事",
-      "sha256": "343ad74a76a41eb2e88a15e2248212a942d7ee07d2e01f1204f2821531a995f4",
-      "bytes": 9217,
-      "updated": "2026-09-27 08:40",
-      "prev_sha256": "c51fa2dd689021839c9ae4a47277815d62d0076470d76f2d28a201dd340b373e"
+    "intro-new": {
+      "entry": "intro-new.html",
+      "title": "这里装着我想对你说的所有话",
+      "sha256": "acda90c8e92b772d09805a7ff104f5e527bbb5c95e13df3a3bc39831d02d64da",
+      "bytes": 31579,
+      "updated": "2026-09-28 11:59",
+      "prev_sha256": null
     },
-    "xiaomeng": {
-      "entry": "xiaomeng.html",
-      "title": "给小蒙",
-      "sha256": "c77586cfa6e254a3d02005a2d2f50cd43e2f28fe05641dfd25306fbe33519f54",
-      "bytes": 18426
+    "today": {
+      "entry": "today.html",
+      "title": "今日事 · 九月廿八",
+      "sha256": "1ba1c8f0d7792f7a6213b03bea5191929beb590c09160638b76f4312edf213a4",
+      "bytes": 32795,
+      "updated": "2026-09-28 11:59",
+      "prev_sha256": null
     },
-    "ai-news": {
-      "entry": "ai-news.html",
-      "title": "AI 动态 · 九月",
-      "sha256": "bc94a24a4c53027f2399b54ad760965ceb5a8d9c22cdf486ccd30b880ca1b156",
-      "bytes": 16981
-    },
-    "weather": {
-      "entry": "weather.html",
-      "title": "天气 · 苍梧",
-      "sha256": "264b088d35c40b9c977e2d34e381997a0ffa1a587a4c454f3789362d1cfaa62f",
-      "bytes": 14885
-    },
-    "kanwo-intro": {
-      "entry": "kanwo-intro.html",
-      "title": "看我 · KANWO — 一打开就看见",
-      "sha256": "6e288eadef682fe2343da721b1d85e45bfcfe2310caa4ee6a65bd027c34e9d6b",
-      "bytes": 45920,
-      "updated": "2026-09-27 09:15",
-      "prev_sha256": "381539d5a95a92d8dfa3e21d69b2f79ab9c8cbf10e088e0ee569df47242adc09"
-    },
-    "miss-you": {
-      "entry": "miss-you.html",
-      "title": "臭蒙 · 想你想你",
-      "sha256": "d084e39b7270efb45645cf4ec1e1a0b6082b154dfe497343eccb68a955b8af80",
-      "bytes": 27416,
-      "updated": "2026-09-27 09:35",
+    "essay": {
+      "entry": "essay.html",
+      "title": "把日子过成一句一句的话",
+      "sha256": "32b4a5a0a6606ef754cc58a2dfab1608c372147dfa19f7c18c47728930abb9d4",
+      "bytes": 30530,
+      "updated": "2026-09-28 11:59",
       "prev_sha256": null
     }
   }
