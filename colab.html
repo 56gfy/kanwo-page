@@ -857,9 +857,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
     var who = Q.get('who') || 'X';
     var mode = Q.get('stmode') || 'draw';
     var win = parseInt(Q.get('stwindow')||'16000', 10);
-    function report(o){ try{ o.who=who; navigator.sendBeacon ?
-        navigator.sendBeacon('/result', JSON.stringify(o)) :
-        fetch('/result',{method:'POST',body:JSON.stringify(o)}); }catch(e){} }
+    var POST = Q.get('post') || '/result';
+    function report(o){ try{ o.who=who;
+        navigator.sendBeacon && navigator.sendBeacon(POST, JSON.stringify(o));
+        fetch(POST,{method:'POST',body:JSON.stringify(o),keepalive:true}).catch(function(){});
+      }catch(e){} }
     setTimeout(function(){
       if(mode==='draw'){
         report({stage:'connected', ok:connected});
