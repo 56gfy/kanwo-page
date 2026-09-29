@@ -14,11 +14,11 @@
     },
     "tech-console": {
       "entry": "tech-console.html",
-      "title": "kanwo-core · console",
-      "sha256": "0ef29525cf0ff6dd373c768ee6a36a4f84d20063100d0fe8361923d4c7aab974",
-      "bytes": 10704,
-      "updated": "2026-09-28 17:48",
-      "prev_sha256": null
+      "title": "kanwo-core :: console",
+      "sha256": "0263ce97dab51be4a725d6bf36290bc10b2122ccb098654c7b79a86094cbf4b3",
+      "bytes": 10705,
+      "updated": "2026-09-29 11:07",
+      "prev_sha256": "0ef29525cf0ff6dd373c768ee6a36a4f84d20063100d0fe8361923d4c7aab974"
     },
     "secret": {
       "entry": "secret.html",
