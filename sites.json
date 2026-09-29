@@ -19,6 +19,14 @@
       "bytes": 10704,
       "updated": "2026-09-28 17:48",
       "prev_sha256": null
+    },
+    "secret": {
+      "entry": "secret.html",
+      "title": "我们的小秘密",
+      "sha256": "01204e53f961f3f0830bbcf7d7e614bc9714991cfb37a084bdfebcee0da0c0d7",
+      "bytes": 20513,
+      "updated": "2026-09-29 08:43",
+      "prev_sha256": null
     }
   }
 }
