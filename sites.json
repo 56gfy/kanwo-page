@@ -6,11 +6,11 @@
   "pages": {
     "tech-boot": {
       "entry": "tech-boot.html",
-      "title": "kanwo-core · boot",
-      "sha256": "ff5bbc4d37487bbf1c4a75a9c07a79562da6b97fbc330075f73e65c278343476",
+      "title": "kanwo-core",
+      "sha256": "57300501b75000445e0c817e237af1b0fcb332571751f74f4dd40d8c87596e18",
       "bytes": 11425,
-      "updated": "2026-09-28 17:48",
-      "prev_sha256": null
+      "updated": "2026-09-29 11:03",
+      "prev_sha256": "ff5bbc4d37487bbf1c4a75a9c07a79562da6b97fbc330075f73e65c278343476"
     },
     "tech-console": {
       "entry": "tech-console.html",
