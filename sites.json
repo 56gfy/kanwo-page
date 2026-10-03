@@ -1,32 +1,16 @@
 {
   "home": {
-    "name": "tech-boot",
-    "entry": "tech-boot.html"
+    "name": "secret",
+    "entry": "secret.html"
   },
   "pages": {
-    "tech-boot": {
-      "entry": "tech-boot.html",
-      "title": "kanwo-core",
-      "sha256": "346396623d89e3904ea34d661133b1bca9354f1c6dc631dc53b92760a2181217",
-      "bytes": 11426,
-      "updated": "2026-09-29 12:11",
-      "prev_sha256": "ceb8177e7343c1f6433390529feb6b7fab9c806ccf53c626d30298979ea5fb8e"
-    },
-    "tech-console": {
-      "entry": "tech-console.html",
-      "title": "kanwo-core :: console",
-      "sha256": "0263ce97dab51be4a725d6bf36290bc10b2122ccb098654c7b79a86094cbf4b3",
-      "bytes": 10705,
-      "updated": "2026-09-29 11:07",
-      "prev_sha256": "0ef29525cf0ff6dd373c768ee6a36a4f84d20063100d0fe8361923d4c7aab974"
-    },
     "secret": {
       "entry": "secret.html",
       "title": "我们的小秘密",
-      "sha256": "36198065e5255cacee1c7fa427962be6184bf944803673ea19f21b23fa3fb481",
-      "bytes": 20511,
-      "updated": "2026-09-29 10:43",
-      "prev_sha256": "01204e53f961f3f0830bbcf7d7e614bc9714991cfb37a084bdfebcee0da0c0d7"
+      "sha256": "796345e9ad0908ec579c0236d4dd024e0fdf650ea2e872b9a68854463dcb42a6",
+      "bytes": 21292,
+      "updated": "2026-10-03 12:14",
+      "prev_sha256": "36198065e5255cacee1c7fa427962be6184bf944803673ea19f21b23fa3fb481"
     }
   }
 }
