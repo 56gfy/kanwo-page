@@ -36,7 +36,7 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
 .rule{width:46px;height:1px;margin:18px auto 0;
   background:linear-gradient(90deg,transparent,#F2A8C4,transparent)}
 
-/* ---------- 「来过」提示（标题下、聊天上，居中一行小字） ----------
+/* ---------- 「TA 来过」提示（标题下、聊天上，居中一行小字） ----------
    对方没来过 = 不显示、不占位（常态 display:none，是真的不渲染）。
    来了才淡入，收到后 1.8 秒自己淡掉，不做常驻占位。
    字号比正文小、颜色比时间还淡，绝不抢戏。 */
@@ -211,7 +211,7 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
     <div class="rule"></div>
   </div>
 
-  <!-- 「来过」提示：常态不显示、不占位；对方打开这一页时才浮出一下 -->
+  <!-- 「TA 来过」提示：常态不显示、不占位；对方打开这一页时才浮出一下 -->
   <p class="pv" id="pv" role="status" aria-live="polite"></p>
 
   <div class="notice" id="notice" role="status" aria-live="polite">
@@ -468,9 +468,14 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
   var BROKER = 'wss://broker.hivemq.com:8884/mqtt';
   var CID = 'c' + Math.random().toString(36).slice(2,10);
 
+  /* 「TA 来过」：整页一条到场主题，跟 p / m 通道无关。
+     页面分不清拿手机的是谁，所以到场信号不夹名字，只有这一条。 */
+  var PV_TOPIC = 'kws/sec/' + ROOM + '/pv';
+
   /* 两个通道的定义：谁、哪个输入框、哪个主题、本机存储键
      init 故意留空 —— 框里不预填任何人名，只给 placeholder 引导。
-     pv  = 这个人的「到场」主题（对方打开发一条，用来点亮「来过」提示）。 */
+     pv  = 这个人的「到场」主题（页面级 PV_TOPIC 才是实际用到的那条）。
+     m 通道的 pv 字段已不再被发布 / 订阅，保留仅为避免其它引用出错。 */
   var CHANNELS = [
     { key:'p', name:'潘潘', topic:'kws/sec/'+ROOM+'/p', tip:'kws/sec/'+ROOM+'/ptyp',
       pv:'kws/sec/'+ROOM+'/pv',
@@ -607,13 +612,15 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
   }
 
   /* ---------- 「TA 来过」 ----------
-     对方一打开这一页，就往他自己那条 pv 主题发一条到场信号。
-     我这边收到对方的 pv -> 浮出「XX来过」，1.8 秒后自己淡掉，不留占位。
+     整页只用一条到场主题，跟通道无关：页面本身分不清拿手机的到底是潘潘还是萌萌
+     （App 是空壳，没有身份标识），所以带名字必然出错。通知里不夹名字，只闪一次。
+     对方一打开这一页，就往那条 pv 主题发一条到场信号。
+     我这边收到对方的 pv -> 浮出「TA 来过」，1.8 秒后自己淡掉，不留占位。
      全部是装饰：连不上 / 收不到，都只是这条提示不出现，其它一律照常。 */
   var pvEl = null, pvOutTimer = null;
-  function showPresence(name){
+  function showPresence(){
     if(!pvEl) return;
-    pvEl.textContent = name + '来过';
+    pvEl.textContent = 'TA 来过';
     pvEl.classList.remove('fade');
     pvEl.classList.add('show');
     if(pvOutTimer) clearTimeout(pvOutTimer);
@@ -622,12 +629,10 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       pvOutTimer = setTimeout(function(){ pvEl.classList.remove('show'); }, 560);
     }, 1800);
   }
-  /* 打开发一条到场信号（连上之前发不出去没关系，onconnect 那里会补发） */
+  /* 打开发一条到场信号（整页一条，不按通道各发；连上之前发不出去没关系，onconnect 那里会补发） */
   function announcePresence(){
     if(!cli || !cli.isConnected()) return;
-    CHANNELS.forEach(function(c){
-      cli.publish(c.pv, JSON.stringify({ n: c.name, cid: CID, ts: Date.now() }), {});
-    });
+    cli.publish(PV_TOPIC, JSON.stringify({ cid: CID, ts: Date.now() }), {});
   }
 
   /* ---------- 收到消息 ---------- */
@@ -644,14 +649,13 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       applyRemote(c, d);
       return;
     }
-    /* 「来过」：对方的到场信号（同样按 cid 排除自己发的回声） */
-    for(i=0;i<CHANNELS.length;i++){
-      if(CHANNELS[i].pv === topic){
-        var v; try{ v = JSON.parse(payload); }catch(e){ return; }
-        if(!v || (v.cid && v.cid === CID)) return;
-        showPresence(CHANNELS[i].name);
-        return;
-      }
+    /* 「来过」：整页一条到场主题，固定文案「TA 来过」
+       （同样按 cid 排除自己发的回声，很关键） */
+    if(topic === PV_TOPIC){
+      var v; try{ v = JSON.parse(payload); }catch(e){ return; }
+      if(!v || (v.cid && v.cid === CID)) return;
+      showPresence();
+      return;
     }
     /* typing 事件 */
     for(i=0;i<CHANNELS.length;i++){
@@ -823,8 +827,8 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       CHANNELS.forEach(function(c){
         cli.subscribe(c.topic, 0);
         cli.subscribe(c.tip, 0);
-        cli.subscribe(c.pv, 0);           /* 也订上「来过」主题 */
       });
+      cli.subscribe(PV_TOPIC, 0);          /* 「TA 来过」整页只订这一条 */
       /* 补一次到场信号：页面刚打开时还没连上，这次一起补发（含重连） */
       announcePresence();
       /* 连上后把两个框的本机内容都推一次：既是补推离线改动，
