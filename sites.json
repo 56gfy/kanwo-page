@@ -7,10 +7,10 @@
     "secret": {
       "entry": "secret.html",
       "title": "我们的小秘密",
-      "sha256": "a1f3ac23f0724107071a22494fa70e135a82279271d248695d1c0b5703528df3",
-      "bytes": 29791,
-      "updated": "2026-10-03 13:00",
-      "prev_sha256": "69f1c041a4700e550c94445672afa119eeb2baa2ec0673c8febf62a90cd8cb16"
+      "sha256": "f6d69a63639192f877f9ae5ab53226f262cda809cb76ccc36b0f0c69a1c81b0d",
+      "bytes": 32601,
+      "updated": "2026-10-03 13:22",
+      "prev_sha256": "a1f3ac23f0724107071a22494fa70e135a82279271d248695d1c0b5703528df3"
     }
   }
 }
