@@ -1,22 +1,16 @@
 {
   "home": {
-    "name": "wall",
-    "entry": "wall.html"
+    "name": "secret",
+    "entry": "secret.html"
   },
   "pages": {
-    "wall": {
-      "entry": "wall.html",
-      "title": "我们的故事",
-      "sha256": "7e88570517e8231c231e5869cd4e8df4bed8a52d2368266049cfd0a1a63b0236",
-      "bytes": 8964,
-      "updated": "2026-10-03 14:33"
-    },
     "secret": {
       "entry": "secret.html",
       "title": "我们的小秘密",
-      "sha256": "f6d69a63639192f877f9ae5ab53226f262cda809cb76ccc36b0f0c69a1c81b0d",
-      "bytes": 32601,
-      "updated": "2026-10-03 14:33"
+      "sha256": "27694a5ea5641b7109f61bc6fea26d36ef3f9f5af3647a7c742fefb4ffaea37c",
+      "bytes": 38611,
+      "updated": "2026-10-03 21:35",
+      "prev_sha256": "f6d69a63639192f877f9ae5ab53226f262cda809cb76ccc36b0f0c69a1c81b0d"
     }
   }
 }
