@@ -36,6 +36,16 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
 .rule{width:46px;height:1px;margin:18px auto 0;
   background:linear-gradient(90deg,transparent,#F2A8C4,transparent)}
 
+/* ---------- 「来过」提示（标题下、聊天上，居中一行小字） ----------
+   对方没来过 = 不显示、不占位（常态 display:none，是真的不渲染）。
+   来了才淡入，收到后 1.8 秒自己淡掉，不做常驻占位。
+   字号比正文小、颜色比时间还淡，绝不抢戏。 */
+.pv{display:none;margin:2px auto 0;text-align:center;
+  font-size:11.5px;line-height:1.6;letter-spacing:.06em;color:#D3AEBD;
+  opacity:0;transition:opacity .5s ease}
+.pv.show{display:block;opacity:1}
+.pv.fade{opacity:0}
+
 /* ---------- 状态提示（隐形：常态完全不占位、不可见） ----------
    连上 = 什么都不显示；只有真掉线时才浮出来。定位是 fixed，
    绝不参与文档流，所以气泡永远不会被推上推下。
@@ -104,17 +114,29 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
 .row.m .bub:before{right:20px;background:#FFEFF6}
 .row.m .bub{background:#FFEFF6}
 
-.ed{display:block;width:100%;min-height:30px;
+/* 触摸友好：最小高度 44px（拇指也能稳稳点中），内容多了再自己长高。
+   内边距给一点上下的余量，让 44px 是靠真实内容撑起来的，不是靠 min-height 硬顶。 */
+.ed{display:block;width:100%;min-height:44px;
   font-family:"Songti SC","STSong","SimSun",serif;
   font-size:17px;line-height:1.85;letter-spacing:.02em;color:#4A2B38;
-  background:transparent;border:0;outline:0;padding:0;resize:none;
+  background:transparent;border:0;outline:0;padding:3px 0;resize:none;
   overflow:hidden;word-break:break-word;caret-color:#E0618F}
 .ed:focus{outline:0}
+/* 提示文字：比正文浅、比时间淡，一打字就消失（textarea placeholder 默认行为） */
+.ed::placeholder{color:#D9C2CC;font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:14.5px;letter-spacing:.04em;opacity:1}
 
 .meta{display:flex;align-items:center;gap:8px;justify-content:flex-end;
   min-height:16px;margin-top:4px;
   font-size:11.5px;color:#C4A4B1;letter-spacing:.03em}
 .row.m .meta{justify-content:flex-start}
+
+/* ---------- 送达回执（气泡右下角，紧挨时间） ----------
+   比时间还小一号、还淡一档，低头一瞄看得到、抬头就忘。
+   默认 display:none —— 发送中什么都不显示（不闪）；
+   成功=「已送到」，没连上=「待发送」；一改动就清空回无。 */
+.st{display:none;font-size:10px;letter-spacing:.04em;color:#DDC8D1}
+.st.on{display:inline}
 
 /* 对方正在输入 */
 .typing{display:none;align-items:center;gap:4px;color:#D08BA6;font-size:11.5px}
@@ -189,6 +211,9 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
     <div class="rule"></div>
   </div>
 
+  <!-- 「来过」提示：常态不显示、不占位；对方打开这一页时才浮出一下 -->
+  <p class="pv" id="pv" role="status" aria-live="polite"></p>
+
   <div class="notice" id="notice" role="status" aria-live="polite">
     <span id="stxt"></span><button class="notice-btn" id="rtry" type="button">重试</button>
   </div>
@@ -203,12 +228,13 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       </div>
       <div class="bub">
         <textarea class="ed" id="in-p" rows="1" spellcheck="false"
-                  aria-label="潘潘写的话"></textarea>
+                  placeholder="想跟萌萌说什么…" aria-label="潘潘写的话"></textarea>
         <div class="meta">
           <span class="typing" id="typ-p">
             <i class="tdot"></i><i class="tdot"></i><i class="tdot"></i>
             <span>对方正在输入…</span>
           </span>
+          <span class="st" id="st-p"></span>
           <span id="time-p">刚刚</span>
         </div>
       </div>
@@ -223,12 +249,13 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       </div>
       <div class="bub">
         <textarea class="ed" id="in-m" rows="1" spellcheck="false"
-                  aria-label="萌萌写的话"></textarea>
+                  placeholder="想跟潘潘说什么…" aria-label="萌萌写的话"></textarea>
         <div class="meta">
           <span class="typing" id="typ-m">
             <i class="tdot"></i><i class="tdot"></i><i class="tdot"></i>
             <span>对方正在输入…</span>
           </span>
+          <span class="st" id="st-m"></span>
           <span id="time-m">刚刚</span>
         </div>
       </div>
@@ -441,19 +468,30 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
   var BROKER = 'wss://broker.hivemq.com:8884/mqtt';
   var CID = 'c' + Math.random().toString(36).slice(2,10);
 
-  /* 两个通道的定义：谁、哪个输入框、哪个主题、本机存储键 */
+  /* 两个通道的定义：谁、哪个输入框、哪个主题、本机存储键
+     init 故意留空 —— 框里不预填任何人名，只给 placeholder 引导。
+     pv  = 这个人的「到场」主题（对方打开发一条，用来点亮「来过」提示）。 */
   var CHANNELS = [
     { key:'p', name:'潘潘', topic:'kws/sec/'+ROOM+'/p', tip:'kws/sec/'+ROOM+'/ptyp',
-      init:'潘潘', input:'in-p', time:'time-p', typing:'typ-p', store:'kwsec_'+ROOM+'_p' },
+      pv:'kws/sec/'+ROOM+'/pv',
+      input:'in-p', time:'time-p', typing:'typ-p', st:'st-p',
+      store:'kwsec_'+ROOM+'_p' },
     { key:'m', name:'萌萌', topic:'kws/sec/'+ROOM+'/m', tip:'kws/sec/'+ROOM+'/mtyp',
-      init:'萌萌', input:'in-m', time:'time-m', typing:'typ-m', store:'kwsec_'+ROOM+'_m' }
+      pv:'kws/sec/'+ROOM+'/mv',
+      input:'in-m', time:'time-m', typing:'typ-m', st:'st-m',
+      store:'kwsec_'+ROOM+'_m' }
   ];
+
+  /* 旧版曾把名字预填进框里（潘潘 / 萌萌）。老用户的本机存档里可能还挂着这两个字，
+     一律当作「没写过」—— 不然升级上来框里还是个人名，跟没改一样。 */
+  var LEGACY_INIT = { p:'潘潘', m:'萌萌' };
 
   /* 每个通道的运行时状态 */
   var chState = {};
   CHANNELS.forEach(function(c){
     chState[c.key] = { text:'', ts:0, typing:false, pending:null, sendTimer:null,
-                       typingTimer:null, els:{}, _selfWrite:false };
+                       typingTimer:null, legacy:false, acked:null,
+                       els:{}, _selfWrite:false };
   });
 
   var cli = null;
@@ -496,13 +534,27 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
   /* 10 秒刷一次：让「刚刚」切到「1 分钟前」更跟得上手。 */
   setInterval(paintTimes, 10000);
 
-  /* ---------- 输入框自动长高（不出内部滚动条） ---------- */
+  /* ---------- 输入框自动长高（不出内部滚动条） ----------
+     底限 44px 与 CSS 的 min-height 对齐：空框也稳稳有 44px 高，
+     内容多了按 scrollHeight 长，绝不出现内部滚动条。 */
   function autoGrow(el){
     el.style.height = 'auto';
     var v = el.scrollHeight || 0;
-    el.style.height = Math.max(30, v) + 'px';
+    el.style.height = Math.max(44, v) + 'px';
   }
   window.__kwAutoGrow = autoGrow;
+
+  /* ---------- 送达回执 ----------
+     冷启动时连上会把两个框都补推一遍（不是用户刚写的），那种不算「刚送到」，
+     不点灯；只有用户真改动过（acked===null 表示「这次改动还没交代」）才给回执。
+     发送中不显示（不闪）：一改动先清空，等这一轮 publish 有结果了再写。 */
+  function paintReceipt(c){
+    var st = chState[c.key], el = st.els.st;
+    if(!el) return;
+    if(st.acked === null){ el.classList.remove('on'); el.textContent = ''; return; }
+    el.textContent = st.acked ? '已送到' : '待发送';
+    el.classList.add('on');
+  }
 
   /* ---------- 发送 ---------- */
   function publishChan(c){
@@ -513,10 +565,13 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
     if(cli && cli.isConnected()){
       cli.publish(c.topic, JSON.stringify(out), { retain:true });
       stats.pubOK++; stats.chans[c.key].sent++;
+      if(st.acked === null) st.acked = true;      /* 用户改动 → 真送到了，点「已送到」 */
     } else {
       /* 没连上 = 这次改动只有本机知道，先存着，连上后 onconnect 会补推 */
       stats.pubSkipNoConn++;
+      if(st.acked === null) st.acked = false;     /* 用户改动 → 还没送出去，点「待发送」 */
     }
+    paintReceipt(c);
     paintTimes();
   }
   function scheduleSend(c){
@@ -551,6 +606,30 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
     stats.chans[c.key].got++;
   }
 
+  /* ---------- 「TA 来过」 ----------
+     对方一打开这一页，就往他自己那条 pv 主题发一条到场信号。
+     我这边收到对方的 pv → 浮出「XX来过」，1.8 秒后自己淡掉，不留占位。
+     全部是装饰：连不上 / 收不到，都只是这条提示不出现，其它一律照常。 */
+  var pvEl = null, pvOutTimer = null;
+  function showPresence(name){
+    if(!pvEl) return;
+    pvEl.textContent = name + '来过';
+    pvEl.classList.remove('fade');
+    pvEl.classList.add('show');
+    if(pvOutTimer) clearTimeout(pvOutTimer);
+    pvOutTimer = setTimeout(function(){          /* 过一两秒淡掉，不永久挂着 */
+      pvEl.classList.add('fade');
+      pvOutTimer = setTimeout(function(){ pvEl.classList.remove('show'); }, 560);
+    }, 1800);
+  }
+  /* 打开发一条到场信号（连上之前发不出去没关系，onconnect 那里会补发） */
+  function announcePresence(){
+    if(!cli || !cli.isConnected()) return;
+    CHANNELS.forEach(function(c){
+      cli.publish(c.pv, JSON.stringify({ n: c.name, cid: CID, ts: Date.now() }), {});
+    });
+  }
+
   /* ---------- 收到消息 ---------- */
   function onMessage(topic, payload){
     var c = null, i;
@@ -564,6 +643,15 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       stats.recv++;
       applyRemote(c, d);
       return;
+    }
+    /* 「来过」：对方的到场信号（同样按 cid 排除自己发的回声） */
+    for(i=0;i<CHANNELS.length;i++){
+      if(CHANNELS[i].pv === topic){
+        var v; try{ v = JSON.parse(payload); }catch(e){ return; }
+        if(!v || (v.cid && v.cid === CID)) return;
+        showPresence(CHANNELS[i].name);
+        return;
+      }
     }
     /* typing 事件 */
     for(i=0;i<CHANNELS.length;i++){
@@ -651,20 +739,32 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       st.els.in = el;
       st.els.time = document.getElementById(c.time);
       st.els.typing = document.getElementById(c.typing);
+      st.els.st = document.getElementById(c.st);
 
-      /* 初始文字：本机存档优先，其次初始文字 */
+      /* 初始文字：本机存档优先，没有就留空（绝不预填人名）。
+         存档里若正好是本通道旧版的预填人名，同样当作没写过 —— 升级不留残影。 */
       var loc = loadLocal(c);
-      st.text = loc ? loc.t : c.init;
-      st.ts   = loc ? loc.ts : 0;
+      if(loc && loc.t === LEGACY_INIT[c.key]){
+        st.text = ''; st.ts = 0; st.legacy = true;
+      } else {
+        st.text = loc ? loc.t : '';
+        st.ts   = loc ? loc.ts : 0;
+        st.legacy = false;
+      }
+      st.acked = null;                       /* 还没改动过 → 不发回执 */
       st._selfWrite = true;
       el.value = st.text;
       st._selfWrite = false;
       autoGrow(el);
+      paintReceipt(c);
 
       el.addEventListener('input', function(){
         if(st._selfWrite) return;              /* 程序写入不触发发送 */
         st.text = el.value;
         st.ts = Date.now();
+        st.legacy = false;
+        st.acked = null;                       /* 新改动 = 还没交代 → 先不显示回执 */
+        paintReceipt(c);
         autoGrow(el);
         persist(c); paintTimes();
         noticeHide();                      /* 已经在写了 = 本机兜底生效，浮层让位给正文 */
@@ -684,6 +784,7 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
     paintTimes();
     paintToday();
     noticeEl = document.getElementById('notice');
+    pvEl = document.getElementById('pv');
     var rt = document.getElementById('rtry');
     if(rt) rt.addEventListener('click', function(){ noticeHide(); retryNow(); });
 
@@ -722,10 +823,17 @@ h1 .sub{display:block;margin-top:8px;font-size:.54em;font-weight:400;
       CHANNELS.forEach(function(c){
         cli.subscribe(c.topic, 0);
         cli.subscribe(c.tip, 0);
+        cli.subscribe(c.pv, 0);           /* 也订上「来过」主题 */
       });
+      /* 补一次到场信号：页面刚打开时还没连上，这次一起补发（含重连） */
+      announcePresence();
       /* 连上后把两个框的本机内容都推一次：既是补推离线改动，
          也保证新来的一方能立刻看到对方已有的字（retain 主题） */
-      CHANNELS.forEach(function(c){ publishChan(c); });
+      CHANNELS.forEach(function(c){
+        publishChan(c);
+        /* 之前是「待发送」（存在本机没出去）的，这一轮补推出去了 → 改回「已送到」 */
+        if(chState[c.key].acked === false){ chState[c.key].acked = true; paintReceipt(c); }
+      });
     };
     cli.onmessage = onMessage;
     cli.onclose = function(){
